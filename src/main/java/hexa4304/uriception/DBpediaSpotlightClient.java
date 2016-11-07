@@ -81,7 +81,7 @@ public class DBpediaSpotlightClient {
     {
         Scanner sc = new Scanner(System.in);
         System.out.println("Que voulez vous tester ?");
-        System.out.println("     1) SpotLigth");
+        System.out.println("     1) SpotLight");
         System.out.println("     2) googleCustomSearchEngine et TextExtraction");
         System.out.println("\n saisissez votre choix :");
         
