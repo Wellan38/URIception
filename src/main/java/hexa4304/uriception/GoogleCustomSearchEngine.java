@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class GoogleCustomSearchEngine {
         final String RESOURCE_PATH = "ressources.txt";
         final String PAGE_PATH = "page.txt";
 
-        URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+APIKey+ "&cx="+ customEngineIdentifier +"&q="+    searchText+"&alt=json");
+        URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+APIKey+ "&cx="+ customEngineIdentifier +"&q="+ URLEncoder.encode(searchText, "UTF-8")+"&alt=json");
         HttpURLConnection conn2 = (HttpURLConnection) url.openConnection();
 
         conn2.setRequestMethod("GET");
@@ -75,28 +76,34 @@ public class GoogleCustomSearchEngine {
         }
 
         JSONObject requestResult = new JSONObject(jsonString);
-        JSONArray items = requestResult.getJSONArray("items");
-
+        
+        
         List<String> pageLinks = new ArrayList();
-
-        for (int i = 0; i < items.length(); i++)
+        
+        if (requestResult.get("items") != null)
         {
-            JSONObject obj = items.getJSONObject(i);
-            String link = obj.getString("link");
+            JSONArray items = requestResult.getJSONArray("items");
+            
+            for (int i = 0; i < items.length(); i++)
+            {
+                JSONObject obj = items.getJSONObject(i);
+                String link = obj.getString("link");
 
-            pageLinks.add(link);
+                pageLinks.add(link);
+            }
+
+            File page_file = new File(PAGE_PATH);
+            BufferedWriter PageWriter = new BufferedWriter(new FileWriter(page_file));
+            System.out.println("\nPages:\n");
+            for (String l : pageLinks)
+            {
+                System.out.println(l);
+                PageWriter.write(l);
+                PageWriter.newLine();
+            }
+            PageWriter.close();
         }
 
-        File page_file = new File(PAGE_PATH);
-        BufferedWriter PageWriter = new BufferedWriter(new FileWriter(page_file));
-        System.out.println("\nPages:\n");
-        for (String l : pageLinks)
-        {
-            System.out.println(l);
-            PageWriter.write(l);
-            PageWriter.newLine();
-        }
-        PageWriter.close();
         return pageLinks;
     }
 }

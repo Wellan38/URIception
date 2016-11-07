@@ -15,6 +15,9 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 
 
@@ -28,24 +31,41 @@ public class TextExtractor {
     {
     }
 
-    public List<String> extractTextFromURLList(List<String> URLList) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
+    public List<List<String>> extractTextFromURLList(List<String> URLList) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
-        List<String> rawTexts = new ArrayList();
+        List<List<String>> rawTexts = new ArrayList();
         for (String url:URLList)
         {
             //extractText(url);
-            rawTexts.add(extractText(url));
+            
+            Elements elements = extractText(url);
+            
+            List<String> paragraphs = new ArrayList();
+            
+            for (Element e : elements)
+            {
+                if (!e.text().equals(""))
+                {
+                    paragraphs.add(e.text());
+                }
+            }
+            rawTexts.add(paragraphs);
         }
         return rawTexts;
     }
     
-    public String extractText(String url) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException{
+    public Elements extractText(String url) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException{
         String html = Jsoup.connect(url).get().html();
+        
         return html2text(html);
     	
     }
     
-    public static String html2text(String html) {
-        return Jsoup.parse(html).text();
+    public static Elements html2text(String html) {
+        Document doc = Jsoup.parse(html);
+        
+        Elements paragraphs = doc.select("p");
+        
+        return paragraphs;
     }
 }

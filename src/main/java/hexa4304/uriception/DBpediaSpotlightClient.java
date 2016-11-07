@@ -7,9 +7,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +27,7 @@ public class DBpediaSpotlightClient {
 
     private final static String API_URL = "http://spotlight.sztaki.hu:2222/";
     private static Exception SpotlightCallException;
+    private final static int PARAGRAPH_LENGTH = 10;
 
     public static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
             String url =    API_URL + "rest/annotate/?"
@@ -50,6 +53,49 @@ public class DBpediaSpotlightClient {
             return response.toString();
     }
     
+    private static List<String> splitText(String text)
+    {
+//        List<String> paragraphs = new ArrayList();
+//        
+//        String[] words = text.split(" ");
+//        
+//        int nb_paragraphs = words.length / PARAGRAPH_LENGTH + 1;
+//        
+//        for (int i = 0; i < nb_paragraphs; i++)
+//        {
+//            String parag = "";
+//            
+//            for (int j = i * PARAGRAPH_LENGTH; i < (i+1) * PARAGRAPH_LENGTH; j++)
+//            {
+//                parag += words[j] + " ";
+//            }
+//            
+//            paragraphs.add(parag);
+//        }
+//        
+//        return paragraphs;
+
+        List<String> paragraphs = new ArrayList();
+          
+        boolean splitting = true;
+        while(splitting)
+        {            
+            if(text.length() > PARAGRAPH_LENGTH)
+            {
+                paragraphs.add(text.substring(0, PARAGRAPH_LENGTH));
+                text = text.substring(PARAGRAPH_LENGTH,text.length()); 
+            }
+            else
+            {
+                paragraphs.add(text);
+                splitting = false;
+            }
+
+        }
+        
+        return paragraphs;
+    }
+    
     public static LinkedList<String> extractURI (String htmlSource)
     {
         LinkedList<String> listUri = new LinkedList<>();
@@ -70,7 +116,7 @@ public class DBpediaSpotlightClient {
     {
         String htmlResponse = "";       
         try {
-            htmlResponse = DBpediaSpotlightClient.getSpotlightResponse(text, 0.5, 0);
+            htmlResponse = DBpediaSpotlightClient.getSpotlightResponse(text, 0.8, 0);
         } catch (IOException ex) {
             Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -81,7 +127,7 @@ public class DBpediaSpotlightClient {
     {
         Scanner sc = new Scanner(System.in);
         System.out.println("Que voulez vous tester ?");
-        System.out.println("     1) SpotLight");
+        System.out.println("     1) SpotLigth");
         System.out.println("     2) googleCustomSearchEngine et TextExtraction");
         System.out.println("\n saisissez votre choix :");
         
@@ -106,7 +152,19 @@ public class DBpediaSpotlightClient {
                     System.out.print("Saisissez la requête : ");
                     String request = sc.nextLine();
                     testGlobal(request);
+                    System.out.println("ok");
                     choiceIsGood = true;
+                case 4 :
+                    sc.nextLine();
+                    System.out.print("Entrez le texte : ");
+                    String text = sc.nextLine();
+                    
+                    List<String> parags = splitText(text);
+                    
+                    for (String p : parags)
+                    {
+                        System.out.println(p);
+                    }
                 default:
                     break;
 
@@ -146,7 +204,7 @@ public class DBpediaSpotlightClient {
     {
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
         List<String> urlList = new ArrayList();
-        urlList = gcse.RequestSearch("Le seigneur des anneaux");
+        urlList = gcse.RequestSearch("Le_seigneur_des_anneaux");
 //        for(String l: urlList)
 //        {
 //            System.out.println(l);
@@ -154,7 +212,7 @@ public class DBpediaSpotlightClient {
 //        System.out.println();
         TextExtractor te = new TextExtractor("api_key.txt");
         List<String> rawTextList = new ArrayList();
-        rawTextList = te.extractTextFromURLList(urlList);
+        //rawTextList = te.extractTextFromURLList(urlList);
         for (String l:rawTextList)
         {
             System.out.println(l);
@@ -168,23 +226,33 @@ public class DBpediaSpotlightClient {
         urlList = gcse.RequestSearch(request);
         
         TextExtractor te = new TextExtractor("api_key.txt");
-        List<String> rawTextList = new ArrayList();
+        List<List<String>> rawTextList = new ArrayList();
         rawTextList = te.extractTextFromURLList(urlList);
-        for (String l:rawTextList)
-        {
-            LinkedList<String> listURI = new LinkedList<>();
-            try {
-                listURI = callAPI(l);
-            } catch (Exception ex) {
-                Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
-            }
         
-            for (String URI : listURI)
+        Set set = new HashSet();
+        
+        for (List<String> paragraphs:rawTextList)
+        {
+            for (String p : paragraphs)
             {
-                System.out.print("URI : ");
-                System.out.println(URI);
-            };
+                try
+                {
+                    set.addAll(callAPI(p));
+                }
+                catch (Exception ex)
+                {
+                    Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
+        
+        LinkedList<String> listURI = new LinkedList(set);
+        
+        for (String URI : listURI)
+        {
+            System.out.print("URI : ");
+            System.out.println(URI);
+        };
     }
     
 }
