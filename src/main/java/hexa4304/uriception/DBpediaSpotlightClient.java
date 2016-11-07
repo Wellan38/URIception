@@ -129,6 +129,8 @@ public class DBpediaSpotlightClient {
         System.out.println("Que voulez vous tester ?");
         System.out.println("     1) SpotLigth");
         System.out.println("     2) googleCustomSearchEngine et TextExtraction");
+        System.out.println("     3) Test Global");
+        System.out.println("     4) URI Filter");
         System.out.println("\n saisissez votre choix :");
         
         int choix = 0;
@@ -155,16 +157,7 @@ public class DBpediaSpotlightClient {
                     System.out.println("ok");
                     choiceIsGood = true;
                 case 4 :
-                    sc.nextLine();
-                    System.out.print("Entrez le texte : ");
-                    String text = sc.nextLine();
-                    
-                    List<String> parags = splitText(text);
-                    
-                    for (String p : parags)
-                    {
-                        System.out.println(p);
-                    }
+                    testJenaArq();
                 default:
                     break;
 
@@ -255,4 +248,10 @@ public class DBpediaSpotlightClient {
         };
     }
     
+    public static void testJenaArq()
+    {
+        SparqlProcessor sp = new SparqlProcessor();
+        
+        sp.URIFilter("http://dbpedia.org/resource/Tom_Clancy's_Splinter_Cell");
+    }
 }
