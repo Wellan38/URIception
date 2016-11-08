@@ -252,6 +252,12 @@ public class DBpediaSpotlightClient {
     {
         SparqlProcessor sp = new SparqlProcessor();
         
-        sp.URIFilter("http://dbpedia.org/resource/Tom_Clancy's_Splinter_Cell");
+        List<String> URIList = new ArrayList();
+        
+        URIList.add("http://dbpedia.org/resource/Tom_Clancy's_Splinter_Cell");
+        
+        URIList.add("http://dbpedia.org/resource/Antennae_(album)");
+        
+        sp.URIFilter(URIList);
     }
 }
