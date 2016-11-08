@@ -5,7 +5,10 @@
  */
 package hexa4304.uriception;
 
+import java.io.ByteArrayOutputStream;
 import org.apache.jena.query.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 /**
@@ -55,9 +58,21 @@ public class SparqlProcessor {
                             " ?type rdfs:subClassOf <http://dbpedia.org/class/yago/ComputerGame100458890>. " +
                             "}" ;
 
-        Query query = QueryFactory.create(queryString); //s2 = the query above
+        Query query = QueryFactory.create(queryString);
         QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
         ResultSet results = qExe.execSelect();
-        ResultSetFormatter.out(System.out, results, query) ;
+        //ResultSetFormatter.out(System.out, results, query) ;
+        
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        
+        String jsonString = new String(outputStream.toByteArray());
+
+        JSONObject resultJson = new JSONObject(jsonString);
+        
+        JSONArray uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
+        
+        System.out.println(uriList);
     }
 }

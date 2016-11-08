@@ -156,15 +156,15 @@ public class DBpediaSpotlightClient {
                     testGlobal(request);
                     System.out.println("ok");
                     choiceIsGood = true;
+                    break;
                 case 4 :
                     testJenaArq();
+                    choiceIsGood = true;
+                    break;
                 default:
                     break;
-
             }
-            
         }
-        
     }
     
     public static void testSpotlight()
