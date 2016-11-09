@@ -55,47 +55,199 @@ public class GameInfo {
     
     
     // Getters
-    public LinkedList<String> getDevelopers()
+    // Renvoie les données sous forme d'URI, avec par exemple le texte "dbpedia/ontology..."
+    public LinkedList<String> getURIDevelopers()
     {
         return _developers;
     }
-    public LinkedList<String> getDesigners()
+    public LinkedList<String> getURIDesigners()
     {
         return _designers;
     }
-    public LinkedList<String> getPublishers()
+    public LinkedList<String> getURIPublishers()
     {
         return _publishers;
     }
-    public LinkedList<String> getReleaseDates()
+    public LinkedList<String> getURIReleaseDates()
     {
         return _releaseDates;
     }
-    public LinkedList<String> getPlatforms()
+    public LinkedList<String> getURIPlatforms()
     {
         return _platforms;
     }
-    public LinkedList<String> getTitles()
+    public LinkedList<String> getURITitles()
     {
         return _titles;
     }
-    public LinkedList<String> getDescriptions()
+    public LinkedList<String> getURIDescriptions()
     {
         return _descriptions;
     }
-    public LinkedList<String> getGenres()
+    public LinkedList<String> getURIGenres()
     {
         return _genres;
     }
     
+    // Renvoie les données sous forme de texte à des fins d'affichage (sans le texte "dpbedia/ontology...")
+    public LinkedList<String> getDevelopersForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_developers);
+    }
+    public LinkedList<String> getDesignersForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_designers);
+    }
+    public LinkedList<String> getPublishersForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_publishers);
+    }
+    public LinkedList<String> getReleaseDatesForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_releaseDates);
+    }
+    public LinkedList<String> getPlatformsForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_platforms);
+    }
+    public LinkedList<String> getTitlesForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_titles);
+    }
+    public LinkedList<String> getDescriptionsForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_descriptions);
+    }
+    public LinkedList<String> getGenresForDisplay()
+    {
+        return extractTextsListFromURIForDisplay(_genres);
+    }
     
-    // Récupère toutes les infos d'un jeu et affiche les genres de ce jeu
-    public void testGameInfo() throws IOException
+    // Prend en paramètre une liste d'URI et met en forme des String pour afficher les données à un humain
+    private LinkedList<String> extractTextsListFromURIForDisplay(LinkedList<String> uri)
+    {
+        LinkedList<String> textsForDisplay = new LinkedList<>();
+        for (String s : uri)
+        {
+            textsForDisplay.add(extractTextFromURIForDisplay(s));
+        }
+        return textsForDisplay;
+    }
+    
+    // Prend en paramètre une URI et met en forme une String pour afficher la donnée à un humain
+    // Par exemple, prend en paramètre "http://dbpedia.org/resource/PlayStation_4" et renvoie "PlayStation 4"
+    private String extractTextFromURIForDisplay(String uri)
+    {
+        String text = uri.substring(uri.lastIndexOf("/"));
+        text = text.replace("_", " ");
+        return text;
+    }
+    
+    
+    // Récupère et affiche toutes les infos d'un jeu
+    public void testGameInfoURI() throws IOException
     {
         getAllInformation();
         
-        System.out.println("Genres du jeu :");
+        System.out.println();
+        System.out.println("- Titre(s) du jeu :");
+        for (String s : _titles)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Genres du jeu :");
         for (String s : _genres)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Description(s) du jeu :");
+        for (String s : _descriptions)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Développeur(s) du jeu :");
+        for (String s : _developers)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Designer(s) du jeu :");
+        for (String s : _designers)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Editeur(s) du jeu :");
+        for (String s : _publishers)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Date(s) de sortie du jeu :");
+        for (String s : _releaseDates)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Plateforme(s) du jeu :");
+        for (String s : _platforms)
+        {
+            System.out.println(s);
+        }
+    }
+    
+    public void testGameInfoDisplay() throws IOException
+    {
+        getAllInformation();
+        
+        System.out.println();
+        System.out.println("- Titre(s) du jeu :");
+        for (String s : getTitlesForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Genres du jeu :");
+        for (String s : getGenresForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Description(s) du jeu :");
+        for (String s : getDescriptionsForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Développeur(s) du jeu :");
+        for (String s : getDevelopersForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Designer(s) du jeu :");
+        for (String s : getDesignersForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Editeur(s) du jeu :");
+        for (String s : getPublishersForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Date(s) de sortie du jeu :");
+        for (String s : getReleaseDatesForDisplay())
+        {
+            System.out.println(s);
+        }
+        System.out.println();
+        System.out.println("- Plateforme(s) du jeu :");
+        for (String s : getPlatformsForDisplay())
         {
             System.out.println(s);
         }
