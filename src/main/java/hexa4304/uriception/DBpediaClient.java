@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.LinkedList;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import sun.net.www.http.HttpClient;
 
 
@@ -56,5 +59,24 @@ public class DBpediaClient {
         request += "}";
         
         return request;
+    }
+    
+    // Extrait les données du document "json" (sous forme de String) envoyé en paramètre
+    public static LinkedList<String> jsonResultToStrings(String json)
+    {
+        LinkedList<String> listStrings = new LinkedList<>();
+        
+        JSONObject obj = new JSONObject(json);
+        JSONObject results = obj.getJSONObject("results");
+        JSONArray arr = results.getJSONArray("bindings");
+        
+        for (int i = 0; i < arr.length(); i++)
+        {
+            JSONObject objI = arr.getJSONObject(i);
+            JSONObject v = objI.getJSONObject("v");
+            listStrings.add(v.getString("value"));
+        }
+        
+        return listStrings;
     }
 }

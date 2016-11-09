@@ -88,26 +88,19 @@ public class GameInfo {
     {
         String objectParameter = ":" + _titles.getFirst();
         
-        //_releaseDates = DBpediaClient.sendRequest(objectParameter, _requestParameters[InfoType.RELEASE_DATE.value()], "");
-        
-        // Parse JSON
-        /*
-        JSONObject obj = new JSONObject(" .... ");
-        String pageName = obj.getJSONObject("pageInfo").getString("pageName");
-
-        JSONArray arr = obj.getJSONArray("posts");
-        for (int i = 0; i < arr.length(); i++)
-        {
-            String post_id = arr.getJSONObject(i).getString("post_id");
-            ......
-        }
-        */
+        _genres = DBpediaClient.jsonResultToStrings(DBpediaClient.sendRequest(objectParameter, _requestParameters[InfoType.GENRES.value()], ""));
     }
     
-    public void test() throws IOException
+    
+    // Récupère toutes les infos d'un jeu et affiche les genres de ce jeu
+    public void testGameInfo() throws IOException
     {
         getAllInformation();
-        //System.out.println(_releaseDate);
-        //System.out.println(_genres);
+        
+        System.out.println("Genres du jeu :");
+        for (String s : _genres)
+        {
+            System.out.println(s);
+        }
     }
 }

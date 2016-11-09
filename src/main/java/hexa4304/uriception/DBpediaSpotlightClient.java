@@ -84,7 +84,7 @@ public class DBpediaSpotlightClient {
         System.out.println("     1) SpotLight");
         System.out.println("     2) googleCustomSearchEngine et TextExtraction");
         System.out.println("     3) ???");
-        System.out.println("     4) récupérer infos jeu");
+        System.out.println("     4) récupérer infos jeu et afficher genres");
         System.out.println("\n saisissez votre choix :");
         
         int choix = 0;
@@ -115,7 +115,7 @@ public class DBpediaSpotlightClient {
                     System.out.print("Saisissez le nom du jeu (format DBPedia avec _ à la place de \" \") : ");
                     String title = sc.nextLine();
                     GameInfo gameInfo = new GameInfo(title);
-                    gameInfo.test();
+                    gameInfo.testGameInfo();
                     choiceIsGood = true;
                     break;
                 default:
