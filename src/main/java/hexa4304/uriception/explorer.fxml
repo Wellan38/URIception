@@ -26,8 +26,8 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <TextField />
-                        <Button mnemonicParsing="false" text="Rechercher" />
+                        <TextField id="searchField" />
+                        <Button id="searchButton" mnemonicParsing="false" text="Rechercher" />
                      </children>
                   </HBox>
                </children>

@@ -1,10 +1,14 @@
 package hexa4304.uriception;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -24,6 +28,12 @@ public class Explorer extends Application {
 
     @FXML
     private Text content;
+
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private Button searchButton;
 
     @FXML
     private Pane graphPane;
@@ -48,6 +58,20 @@ public class Explorer extends Application {
             this.title = (Text) scene.lookup("#title");
             this.content = (Text) scene.lookup("#content");
             this.image = (ImageView) scene.lookup("#image");
+            this.searchField = (TextField) scene.lookup("#searchField");
+            this.searchButton = (Button) scene.lookup("#searchButton");
+
+            this.searchButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    try {
+                        GameInfo info = new GameInfo(Explorer.this.getSearchField().getText());
+                        System.out.println(info);
+                    } catch(Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            });
 
             this.graphPane = (Pane) scene.lookup("#graph");
 
@@ -118,5 +142,48 @@ public class Explorer extends Application {
         return this.graphPane;
     }
 
+    public Text getTitle() {
+        return title;
+    }
+
+    public void setTitle(Text title) {
+        this.title = title;
+    }
+
+    public ImageView getImage() {
+        return image;
+    }
+
+    public void setImage(ImageView image) {
+        this.image = image;
+    }
+
+    public Text getContent() {
+        return content;
+    }
+
+    public void setContent(Text content) {
+        this.content = content;
+    }
+
+    public TextField getSearchField() {
+        return searchField;
+    }
+
+    public void setSearchField(TextField searchField) {
+        this.searchField = searchField;
+    }
+
+    public Button getSearchButton() {
+        return searchButton;
+    }
+
+    public void setSearchButton(Button searchButton) {
+        this.searchButton = searchButton;
+    }
+
+    public void setGraphPane(Pane graphPane) {
+        this.graphPane = graphPane;
+    }
 }
 
