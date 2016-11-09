@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sun.net.www.http.HttpClient;
 
 
@@ -15,6 +18,48 @@ import sun.net.www.http.HttpClient;
 
 
 public class DBpediaClient {
+    
+    // Paramètres dans la requête SPARQL correspondant aux infos souhaitées
+    public static String[] _requestParameters;
+    
+    // Types -------------------------------------------------------------------
+    // Enumération pour les paramètres
+    public enum InfoType {
+        DEVELOPERS(0),
+        DESIGNERS(1),
+        PUBLISHERS(2),
+        RELEASE_DATES(3),
+        PLATFORMS(4),
+        TITLES(5),
+        DESCRIPTIONS(6),
+        GENRES(7),
+        NUMBER_INFO(8);
+
+        @SuppressWarnings("unused")
+        private final int id;
+
+        private InfoType(int id) {
+                this.id = id;
+        }
+        
+        public int value()
+        {
+            return id;
+        }
+    }
+    
+    private void initRequestParameters()
+    {
+        _requestParameters = new String[InfoType.NUMBER_INFO.value()];
+        _requestParameters[InfoType.DEVELOPERS.value()] = "<http://dbpedia.org/ontology/developer>";
+        _requestParameters[InfoType.DESIGNERS.value()] = "<http://dbpedia.org/ontology/designer>";
+        _requestParameters[InfoType.PUBLISHERS.value()] = "<http://dbpedia.org/ontology/publisher>";
+        _requestParameters[InfoType.RELEASE_DATES.value()] = "<http://dbpedia.org/ontology/releaseDate>";
+        _requestParameters[InfoType.PLATFORMS.value()] = "<http://dbpedia.org/ontology/computingPlatform>";
+        _requestParameters[InfoType.TITLES.value()] = "<http://www.w3.org/2000/01/rdf-schema#label>";
+        _requestParameters[InfoType.DESCRIPTIONS.value()] = "<http://www.w3.org/2000/01/rdf-schema#comment>";
+        _requestParameters[InfoType.GENRES.value()] = "<http://dbpedia.org/ontology/genre>";
+    }
     
     // Renvoie le résultat de la requête SPARQL de paramètres object, predicate, value.
     // Si un paramètre n'est pas connu, entrer la valeur "null".
@@ -56,5 +101,50 @@ public class DBpediaClient {
         request += "}";
         
         return request;
+    }
+    
+    public static LinkedList<String> jsonResultToStrings(String json)
+    {
+        return null;
+    }
+        
+    public static LinkedList<String> getObjectByValuedProperty(String property, String valueofProperty)
+    {       
+        String gamesJsonReturned = null;
+        try
+        {
+            gamesJsonReturned = sendRequest(null, property, valueofProperty);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if(gamesJsonReturned != null)
+        {
+            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned);
+            return games;
+        }
+
+        return null;
+    }
+    
+    public static LinkedList<String> getObjectValueByProperty(String object, String property)
+    {       
+        String gamesJsonReturned = null;
+        try
+        {
+            gamesJsonReturned = sendRequest(object, property, null);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if(gamesJsonReturned != null)
+        {
+            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned);
+            return games;
+        }
+
+        return null;
     }
 }

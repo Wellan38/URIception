@@ -21,38 +21,7 @@ public class GameInfo {
     private LinkedList<String> _platforms;
     private LinkedList<String> _titles;
     private LinkedList<String> _descriptions;
-    private LinkedList<String> _genres;
-    
-    // Paramètres dans la requête SPARQL correspondant aux infos souhaitées
-    private String[] _requestParameters;
-    
-    
-    // Types -------------------------------------------------------------------
-    // Enumération pour les paramètres
-    public enum InfoType {
-        DEVELOPERS(0),
-        DESIGNERS(1),
-        PUBLISHERS(2),
-        RELEASE_DATES(3),
-        PLATFORMS(4),
-        TITLES(5),
-        DESCRIPTIONS(6),
-        GENRES(7),
-        NUMBER_INFO(8);
-
-        @SuppressWarnings("unused")
-        private final int id;
-
-        private InfoType(int id) {
-                this.id = id;
-        }
-        
-        public int value()
-        {
-            return id;
-        }
-    }
-    
+    private LinkedList<String> _genres;  
     
     // Méthodes ----------------------------------------------------------------
     public GameInfo(String title)
@@ -66,23 +35,8 @@ public class GameInfo {
         _platforms = new LinkedList<>();
         _descriptions = new LinkedList<>();
         _genres = new LinkedList<>();
-        
-        initRequestParameters();
+
     }
-    
-    private void initRequestParameters()
-    {
-        _requestParameters = new String[InfoType.NUMBER_INFO.value()];
-        _requestParameters[InfoType.DEVELOPERS.value()] = "<http://dbpedia.org/ontology/developer>";
-        _requestParameters[InfoType.DESIGNERS.value()] = "<http://dbpedia.org/ontology/designer>";
-        _requestParameters[InfoType.PUBLISHERS.value()] = "<http://dbpedia.org/ontology/publisher>";
-        _requestParameters[InfoType.RELEASE_DATES.value()] = "<http://dbpedia.org/ontology/releaseDate>";
-        _requestParameters[InfoType.PLATFORMS.value()] = "<http://dbpedia.org/ontology/computingPlatform>";
-        _requestParameters[InfoType.TITLES.value()] = "<http://www.w3.org/2000/01/rdf-schema#label>";
-        _requestParameters[InfoType.DESCRIPTIONS.value()] = "<http://www.w3.org/2000/01/rdf-schema#comment>";
-        _requestParameters[InfoType.GENRES.value()] = "<http://dbpedia.org/ontology/genre>";
-    }
-    
     
     public void getAllInformation() throws IOException
     {
