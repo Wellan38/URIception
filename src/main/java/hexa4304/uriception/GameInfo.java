@@ -16,11 +16,11 @@ public class GameInfo {
     // Attributs ---------------------------------------------------------------
     private LinkedList<String> _developers;
     private LinkedList<String> _designers;
-    private String _publisher;
-    private String _releaseDate;
+    private LinkedList<String> _publishers;
+    private LinkedList<String> _releaseDates;
     private LinkedList<String> _platforms;
-    private String _title;
-    private String _description;
+    private LinkedList<String> _titles;
+    private LinkedList<String> _descriptions;
     private LinkedList<String> _genres;
     
     // Paramètres dans la requête SPARQL correspondant aux infos souhaitées
@@ -32,11 +32,11 @@ public class GameInfo {
     public enum InfoType {
         DEVELOPERS(0),
         DESIGNERS(1),
-        PUBLISHER(2),
-        RELEASE_DATE(3),
+        PUBLISHERS(2),
+        RELEASE_DATES(3),
         PLATFORMS(4),
-        TITLE(5),
-        DESCRIPTION(6),
+        TITLES(5),
+        DESCRIPTIONS(6),
         GENRES(7),
         NUMBER_INFO(8);
 
@@ -57,13 +57,14 @@ public class GameInfo {
     // Méthodes ----------------------------------------------------------------
     public GameInfo(String title)
     {
-        _title = title;
+        _titles = new LinkedList<>();
+        _titles.add(title);
         _developers = new LinkedList<>();
         _designers = new LinkedList<>();
-        _publisher = new String();
-        _releaseDate = new String();
+        _publishers = new LinkedList<>();
+        _releaseDates = new LinkedList<>();
         _platforms = new LinkedList<>();
-        _description = new String();
+        _descriptions = new LinkedList<>();
         _genres = new LinkedList<>();
         
         initRequestParameters();
@@ -74,20 +75,20 @@ public class GameInfo {
         _requestParameters = new String[InfoType.NUMBER_INFO.value()];
         _requestParameters[InfoType.DEVELOPERS.value()] = "<http://dbpedia.org/ontology/developer>";
         _requestParameters[InfoType.DESIGNERS.value()] = "<http://dbpedia.org/ontology/designer>";
-        _requestParameters[InfoType.PUBLISHER.value()] = "<http://dbpedia.org/ontology/publisher>";
-        _requestParameters[InfoType.RELEASE_DATE.value()] = "<http://dbpedia.org/ontology/releaseDate>";
+        _requestParameters[InfoType.PUBLISHERS.value()] = "<http://dbpedia.org/ontology/publisher>";
+        _requestParameters[InfoType.RELEASE_DATES.value()] = "<http://dbpedia.org/ontology/releaseDate>";
         _requestParameters[InfoType.PLATFORMS.value()] = "<http://dbpedia.org/ontology/computingPlatform>";
-        _requestParameters[InfoType.TITLE.value()] = "<http://www.w3.org/2000/01/rdf-schema#label>";
-        _requestParameters[InfoType.DESCRIPTION.value()] = "<http://www.w3.org/2000/01/rdf-schema#comment>";
+        _requestParameters[InfoType.TITLES.value()] = "<http://www.w3.org/2000/01/rdf-schema#label>";
+        _requestParameters[InfoType.DESCRIPTIONS.value()] = "<http://www.w3.org/2000/01/rdf-schema#comment>";
         _requestParameters[InfoType.GENRES.value()] = "<http://dbpedia.org/ontology/genre>";
     }
     
     
     public void getAllInformation() throws IOException
     {
-        String objectParameter = ":" + _title;
+        String objectParameter = ":" + _titles.getFirst();
         
-        _releaseDate = DBpediaClient.sendRequest(objectParameter, _requestParameters[InfoType.RELEASE_DATE.value()], "");
+        //_releaseDates = DBpediaClient.sendRequest(objectParameter, _requestParameters[InfoType.RELEASE_DATE.value()], "");
         
         // Parse JSON
         /*
@@ -106,7 +107,7 @@ public class GameInfo {
     public void test() throws IOException
     {
         getAllInformation();
-        System.out.println(_releaseDate);
+        //System.out.println(_releaseDate);
         //System.out.println(_genres);
     }
 }
