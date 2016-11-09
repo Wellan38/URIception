@@ -43,6 +43,7 @@ public class Explorer extends Application {
     private static final String DEFAULT_CONTENT = "Aucun objet sélectionné !";
 
     public static void main(String[] args) {
+        DBpediaClient.initRequestParameters();
         Application.launch(Explorer.class, args);
     }
 
