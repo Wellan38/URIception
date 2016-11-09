@@ -76,57 +76,7 @@ public class DBpediaSpotlightClient {
         }
         return extractURI(htmlResponse);
     }
-    
-    public static void main(String[] args) throws IOException, JSONException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Que voulez vous tester ?");
-        System.out.println("     1) SpotLight");
-        System.out.println("     2) googleCustomSearchEngine et TextExtraction");
-        System.out.println("     3) ???");
-        System.out.println("     4) récupérer infos jeu et afficher genres");
-        System.out.println("\n saisissez votre choix :");
-        
-        int choix = 0;
-        boolean choiceIsGood = false;
-        while (!choiceIsGood)
-        {
-            System.out.println("**");
-            choix = sc.nextInt();
-            switch (choix)
-            {
-                case 1 :
-                    testSpotlight();
-                    choiceIsGood = true;
-                    break;
-                case 2 :
-                    testGSE();
-                    choiceIsGood = true;
-                    break;
-                case 3 :
-                    sc.nextLine();
-                    System.out.print("Saisissez la requête : ");
-                    String request = sc.nextLine();
-                    testGlobal(request);
-                    choiceIsGood = true;
-                    break;
-                case 4 :
-                    sc.nextLine();
-                    System.out.print("Saisissez le nom du jeu (format DBPedia avec _ à la place de \" \") : ");
-                    String title = sc.nextLine();
-                    GameInfo gameInfo = new GameInfo(title);
-                    gameInfo.testGameInfo();
-                    choiceIsGood = true;
-                    break;
-                default:
-                    break;
 
-            }
-            
-        }
-        
-    }
-    
     public static void testSpotlight()
     {
         

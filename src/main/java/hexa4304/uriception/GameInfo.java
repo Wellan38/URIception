@@ -2,8 +2,6 @@ package hexa4304.uriception;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import org.json.JSONObject;
-import org.json.JSONArray;
 
 
 /* classe GameInfo :
@@ -21,44 +19,14 @@ public class GameInfo {
     private LinkedList<String> _platforms;
     private LinkedList<String> _titles;
     private LinkedList<String> _descriptions;
-    private LinkedList<String> _genres;
-    
-    // Paramètres dans la requête SPARQL correspondant aux infos souhaitées
-    private String[] _requestParameters;
-    
-    
-    // Types -------------------------------------------------------------------
-    // Enumération pour les paramètres
-    public enum InfoType {
-        DEVELOPERS(0),
-        DESIGNERS(1),
-        PUBLISHERS(2),
-        RELEASE_DATES(3),
-        PLATFORMS(4),
-        TITLES(5),
-        DESCRIPTIONS(6),
-        GENRES(7),
-        NUMBER_INFO(8);
-
-        @SuppressWarnings("unused")
-        private final int id;
-
-        private InfoType(int id) {
-                this.id = id;
-        }
-        
-        public int value()
-        {
-            return id;
-        }
-    }
-    
+    private LinkedList<String> _genres;  
     
     // Méthodes ----------------------------------------------------------------
     public GameInfo(String title)
     {
         _titles = new LinkedList<>();
         _titles.add(title);
+        
         _developers = new LinkedList<>();
         _designers = new LinkedList<>();
         _publishers = new LinkedList<>();
@@ -66,29 +34,21 @@ public class GameInfo {
         _platforms = new LinkedList<>();
         _descriptions = new LinkedList<>();
         _genres = new LinkedList<>();
-        
-        initRequestParameters();
     }
     
-    private void initRequestParameters()
-    {
-        _requestParameters = new String[InfoType.NUMBER_INFO.value()];
-        _requestParameters[InfoType.DEVELOPERS.value()] = "<http://dbpedia.org/ontology/developer>";
-        _requestParameters[InfoType.DESIGNERS.value()] = "<http://dbpedia.org/ontology/designer>";
-        _requestParameters[InfoType.PUBLISHERS.value()] = "<http://dbpedia.org/ontology/publisher>";
-        _requestParameters[InfoType.RELEASE_DATES.value()] = "<http://dbpedia.org/ontology/releaseDate>";
-        _requestParameters[InfoType.PLATFORMS.value()] = "<http://dbpedia.org/ontology/computingPlatform>";
-        _requestParameters[InfoType.TITLES.value()] = "<http://www.w3.org/2000/01/rdf-schema#label>";
-        _requestParameters[InfoType.DESCRIPTIONS.value()] = "<http://www.w3.org/2000/01/rdf-schema#comment>";
-        _requestParameters[InfoType.GENRES.value()] = "<http://dbpedia.org/ontology/genre>";
-    }
-    
-    
+    // Récupère toutes les informations concernant le jeu.
+    // *** Le titre du jeu doit être connu ***
     public void getAllInformation() throws IOException
     {
         String objectParameter = ":" + _titles.getFirst();
         
-        _genres = DBpediaClient.jsonResultToStrings(DBpediaClient.sendRequest(objectParameter, _requestParameters[InfoType.GENRES.value()], ""));
+        _developers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DEVELOPERS.value()]);
+        _designers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESIGNERS.value()]);
+        _publishers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.PUBLISHERS.value()]);
+        _releaseDates = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.RELEASE_DATES.value()]);
+        _platforms = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.PLATFORMS.value()]);
+        _descriptions = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESCRIPTIONS.value()]);
+        _genres = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()]);
     }
     
     
