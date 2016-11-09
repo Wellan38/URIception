@@ -153,6 +153,7 @@ public class DBpediaClient {
             gamesJsonReturned = sendRequest(object, property, null);
         } catch (IOException ex)
         {
+            System.err.println("Yolo");
             Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -162,6 +163,7 @@ public class DBpediaClient {
             return games;
         }
 
+        System.err.println("Retour batard");
         return new LinkedList<>();
     }
 }
