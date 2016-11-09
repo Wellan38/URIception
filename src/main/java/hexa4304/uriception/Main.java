@@ -5,10 +5,12 @@
  */
 package hexa4304.uriception;
 
+import static hexa4304.uriception.DBpediaClient._requestParameters;
 import static hexa4304.uriception.DBpediaSpotlightClient.testGSE;
 import static hexa4304.uriception.DBpediaSpotlightClient.testGlobal;
 import static hexa4304.uriception.DBpediaSpotlightClient.testSpotlight;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Scanner;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
@@ -62,6 +64,18 @@ public class Main {
                     String title = sc.nextLine();
                     GameInfo gameInfo = new GameInfo(title);
                     gameInfo.testGameInfoURI();
+                    choiceIsGood = true;
+                    break;
+                case 5 :
+                    sc.nextLine();
+                    System.out.print("Affichage des jeux de survie");
+                    LinkedList<String> listGames = DBpediaClient.getObjectByPropertyValue(
+                            _requestParameters[DBpediaClient.InfoType.GENRES.value()],
+                            "<http://dbpedia.org/resource/Survival_game>");
+                    for(String t : listGames)
+                    {
+                        System.out.println(t);
+                    }
                     choiceIsGood = true;
                     break;
                 default:

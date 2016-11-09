@@ -89,61 +89,6 @@ public class GameInfo {
         return _genres;
     }
     
-    // Renvoie les données sous forme de texte à des fins d'affichage (sans le texte "dpbedia/ontology...")
-    public LinkedList<String> getDevelopersForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_developers);
-    }
-    public LinkedList<String> getDesignersForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_designers);
-    }
-    public LinkedList<String> getPublishersForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_publishers);
-    }
-    public LinkedList<String> getReleaseDatesForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_releaseDates);
-    }
-    public LinkedList<String> getPlatformsForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_platforms);
-    }
-    public LinkedList<String> getTitlesForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_titles);
-    }
-    public LinkedList<String> getDescriptionsForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_descriptions);
-    }
-    public LinkedList<String> getGenresForDisplay()
-    {
-        return extractTextsListFromURIForDisplay(_genres);
-    }
-    
-    // Prend en paramètre une liste d'URI et met en forme des String pour afficher les données à un humain
-    private LinkedList<String> extractTextsListFromURIForDisplay(LinkedList<String> uri)
-    {
-        LinkedList<String> textsForDisplay = new LinkedList<>();
-        for (String s : uri)
-        {
-            textsForDisplay.add(extractTextFromURIForDisplay(s));
-        }
-        return textsForDisplay;
-    }
-    
-    // Prend en paramètre une URI et met en forme une String pour afficher la donnée à un humain
-    // Par exemple, prend en paramètre "http://dbpedia.org/resource/PlayStation_4" et renvoie "PlayStation 4"
-    private String extractTextFromURIForDisplay(String uri)
-    {
-        String text = uri.substring(uri.lastIndexOf("/"));
-        text = text.replace("_", " ");
-        return text;
-    }
-    
-    
     // Récupère et affiche toutes les infos d'un jeu
     public void testGameInfoURI() throws IOException
     {
@@ -205,49 +150,49 @@ public class GameInfo {
         
         System.out.println();
         System.out.println("- Titre(s) du jeu :");
-        for (String s : getTitlesForDisplay())
+        for (String s : _titles)
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Genres du jeu :");
-        for (String s : getGenresForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_genres))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Description(s) du jeu :");
-        for (String s : getDescriptionsForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_descriptions))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Développeur(s) du jeu :");
-        for (String s : getDevelopersForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_developers))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Designer(s) du jeu :");
-        for (String s : getDesignersForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_designers))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Editeur(s) du jeu :");
-        for (String s : getPublishersForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_publishers))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Date(s) de sortie du jeu :");
-        for (String s : getReleaseDatesForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_releaseDates))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Plateforme(s) du jeu :");
-        for (String s : getPlatformsForDisplay())
+        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_platforms))
         {
             System.out.println(s);
         }

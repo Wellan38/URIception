@@ -7,6 +7,7 @@ package hexa4304.uriception;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.jsoup.Jsoup;
 
@@ -20,7 +21,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 /**
  *
- * @author Flo Macé
  */
 public class TextExtractor {
     
@@ -47,5 +47,26 @@ public class TextExtractor {
     
     public static String html2text(String html) {
         return Jsoup.parse(html).text();
+    }
+    
+    // Renvoie les données sous forme de texte à des fins d'affichage (sans le texte "dpbedia/ontology...")
+    // Prend en paramètre une liste d'URI et met en forme des String pour afficher les données à un humain
+    public static LinkedList<String> extractTextsListFromURIForDisplay(LinkedList<String> uri)
+    {
+        LinkedList<String> textsForDisplay = new LinkedList<>();
+        for (String s : uri)
+        {
+            textsForDisplay.add(extractTextFromURIForDisplay(s));
+        }
+        return textsForDisplay;
+    }
+    
+    // Prend en paramètre une URI et met en forme une String pour afficher la donnée à un humain
+    // Par exemple, prend en paramètre "http://dbpedia.org/resource/PlayStation_4" et renvoie "PlayStation 4"
+    public static String extractTextFromURIForDisplay(String uri)
+    {
+        String text = uri.substring(uri.lastIndexOf("/"));
+        text = text.replace("_", " ");
+        return text;
     }
 }
