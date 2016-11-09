@@ -25,9 +25,9 @@ import org.jsoup.select.Elements;
  *
  * @author Flo Macé
  */
-public class TextExtractor {
+public class TextManager {
     
-    public TextExtractor(String API_key_path)
+    public TextManager(String API_key_path)
     {
     }
 
@@ -67,5 +67,31 @@ public class TextExtractor {
         Elements paragraphs = doc.select("p");
         
         return paragraphs;
+    }
+    
+    public List<String> GetRelevantURI(List<String> URIList, String request)
+    {
+        request = request.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
+        String [] requestWord = request.split(" ");
+        List<String> newURIList = new ArrayList();
+        
+        for(String uri: URIList)
+        {
+            String strTmp = uri.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
+            int counter=0;
+            for(int i = 0; i < requestWord.length; i++)
+            {
+                if(strTmp.contains(requestWord[i]))
+                {
+                    counter++;
+                }
+            }
+            if((counter/requestWord.length) >= 0.5){
+                System.out.println(uri);
+                newURIList.add(uri);
+            }
+        }
+        
+        return newURIList;
     }
 }

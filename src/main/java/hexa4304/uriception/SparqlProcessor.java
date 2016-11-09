@@ -23,58 +23,21 @@ public class SparqlProcessor {
     
     public List<String> URIFilter(List<String> URIList)
     {
-//        Model model = ModelFactory.createDefaultModel();
-//        String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
-//                            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
-//                            "SELECT * WHERE { " +
-//                            " <"+URIList+"> rdf:type ?type. " +
-//                            " ?type rdfs:subClassOf <http://dbpedia.org/class/yago/ComputerGame100458890>. " +
-//                            "}" ;
-//        Query query = QueryFactory.create(queryString) ;
-//        try (QueryExecution qexec = QueryExecutionFactory.create(query, model)) {
-//          ResultSet results = qexec.execSelect() ;
-//          System.out.println(results.toString());
-//          if( results.hasNext())
-//          {
-//              System.out.println("OK");
-//          }
-//          else
-//          {
-//               System.out.println("PAS OK");
-//          }
-//          for ( ; results.hasNext() ; )
-//          {
-//            QuerySolution soln = results.nextSolution() ;
-//            System.out.println("ok");
-//            System.out.println(soln.toString());
-//            RDFNode x = soln.get("varName") ;       // Get a result variable by name.
-//            Resource r = soln.getResource("VarR") ; // Get a result variable - must be a resource
-//            Literal l = soln.getLiteral("VarL") ;   // Get a result variable - must be a literal
-//            System.out.println(x.toString() + r.toString() + l.toString());
-//          }
-//        }
-    
-//        String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
-//                            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
-//                            "SELECT * WHERE { " +
-//                            " <"+URIList+"> rdf:type ?type. " +
-//                            " ?type rdfs:subClassOf <http://dbpedia.org/class/yago/ComputerGame100458890>. " +
-//                            "}" ;
-        
         List<String> videoGameURIList = new ArrayList();
         
         for (String uri : URIList)
         {
-            String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
-                                "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
-                                "SELECT DISTINCT ?class WHERE { " +
-                                " <" + uri + "> rdf:type ?type. " +
-                                " ?type rdfs:subClassOf ?class. " +
+            System.out.println("URI List Filter");
+            String queryString ="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
+                                "SELECT DISTINCT ?opus WHERE { " +
+                                " ?opus <http://dbpedia.org/ontology/series> <" + uri + ">. " +
+                                " ?opus rdf:type <http://dbpedia.org/ontology/VideoGame>"+
                                 "}" ;
 
             Query query = QueryFactory.create(queryString);
             QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
             ResultSet results = qExe.execSelect();
+            
             //ResultSetFormatter.out(System.out, results, query) ;
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -87,25 +50,31 @@ public class SparqlProcessor {
 
             JSONArray uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
             
-            List<String> classes = new ArrayList();
+            if(uriList.length() == 0)
+            {
+                queryString =   "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
+                                "SELECT DISTINCT * WHERE { " +
+                                " <" + uri + "> rdf:type <http://dbpedia.org/ontology/VideoGame>. " +
+                                "}" ;
 
+                query = QueryFactory.create(queryString);
+                qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
+                results = qExe.execSelect();
+                uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
+            }
+           
             for (int i = 0; i < uriList.length(); i++)
             {
-                classes.add(uriList.getJSONObject(i).getJSONObject("class").get("value").toString());
-            }
-            
-            if (classes.contains(VIDEOGAME_CLASS))
-            {
-                videoGameURIList.add(uri);
+                videoGameURIList.add(uriList.getJSONObject(i).getJSONObject("opus").get("value").toString());
             }
         }
         
-        System.out.println("List of video games :");
-        
-        for (String uri : videoGameURIList)
-        {
-            System.out.println(uri);
-        }
+//        System.out.println("List of video games :");
+//        
+//        for (String uri : videoGameURIList)
+//        {
+//            System.out.println(uri);
+//        }
         
         return videoGameURIList;
     }

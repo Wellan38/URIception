@@ -157,10 +157,10 @@ public class DBpediaSpotlightClient {
                     System.out.println("ok");
                     choiceIsGood = true;
                     break;
-                case 4 :
-                    testJenaArq();
-                    choiceIsGood = true;
-                    break;
+//                case 4 :
+//                    testJenaArq();
+//                    choiceIsGood = true;
+//                    break;
                 default:
                     break;
             }
@@ -197,13 +197,13 @@ public class DBpediaSpotlightClient {
     {
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
         List<String> urlList = new ArrayList();
-        urlList = gcse.RequestSearch("Le_seigneur_des_anneaux");
+        urlList = gcse.RequestSearch("Le seigneur des anneaux");
 //        for(String l: urlList)
 //        {
 //            System.out.println(l);
 //        }
 //        System.out.println();
-        TextExtractor te = new TextExtractor("api_key.txt");
+        TextManager te = new TextManager("api_key.txt");
         List<String> rawTextList = new ArrayList();
         //rawTextList = te.extractTextFromURLList(urlList);
         for (String l:rawTextList)
@@ -218,7 +218,7 @@ public class DBpediaSpotlightClient {
         List<String> urlList = new ArrayList();
         urlList = gcse.RequestSearch(request);
         
-        TextExtractor te = new TextExtractor("api_key.txt");
+        TextManager te = new TextManager("api_key.txt");
         List<List<String>> rawTextList = new ArrayList();
         rawTextList = te.extractTextFromURLList(urlList);
         
@@ -240,24 +240,26 @@ public class DBpediaSpotlightClient {
         }
         
         LinkedList<String> listURI = new LinkedList(set);
+        List<String> refineUriList = te.GetRelevantURI(listURI, request);
+        testJenaArq(refineUriList);
         
+//        for (String URI : listURI)
+//        {
+//            System.out.print("URI : ");
+//            System.out.println(URI);
+//        };
+    }
+    
+    public static void testJenaArq(List<String> URIList)
+    {
+        
+        SparqlProcessor sp = new SparqlProcessor();
+        
+        List<String> listURI = sp.URIFilter(URIList);
         for (String URI : listURI)
         {
             System.out.print("URI : ");
             System.out.println(URI);
         };
-    }
-    
-    public static void testJenaArq()
-    {
-        SparqlProcessor sp = new SparqlProcessor();
-        
-        List<String> URIList = new ArrayList();
-        
-        URIList.add("http://dbpedia.org/resource/Tom_Clancy's_Splinter_Cell");
-        
-        URIList.add("http://dbpedia.org/resource/Antennae_(album)");
-        
-        sp.URIFilter(URIList);
     }
 }
