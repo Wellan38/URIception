@@ -124,7 +124,7 @@ public class DBpediaClient {
     }
     
     // Renvoie null en cas de problème
-    public static LinkedList<String> getObjectByValuedProperty(String property, String valueofProperty)
+    public static LinkedList<String> getObjectByPropertyValue(String property, String valueofProperty)
     {       
         String gamesJsonReturned = null;
         try
