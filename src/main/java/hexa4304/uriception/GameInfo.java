@@ -22,7 +22,7 @@ public class GameInfo {
     private LinkedList<String> _genres;  
     
     // Méthodes ----------------------------------------------------------------
-    public GameInfo(String title)
+    public GameInfo(String title) throws IOException
     {
         _titles = new LinkedList<>();
         _titles.add(title);
@@ -34,6 +34,8 @@ public class GameInfo {
         _platforms = new LinkedList<>();
         _descriptions = new LinkedList<>();
         _genres = new LinkedList<>();
+        
+        getAllInformation();
     }
     
     // Récupère toutes les informations concernant le jeu.
@@ -49,6 +51,41 @@ public class GameInfo {
         _platforms = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.PLATFORMS.value()]);
         _descriptions = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESCRIPTIONS.value()]);
         _genres = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()]);
+    }
+    
+    
+    // Getters
+    public LinkedList<String> getDevelopers()
+    {
+        return _developers;
+    }
+    public LinkedList<String> getDesigners()
+    {
+        return _designers;
+    }
+    public LinkedList<String> getPublishers()
+    {
+        return _publishers;
+    }
+    public LinkedList<String> getReleaseDates()
+    {
+        return _releaseDates;
+    }
+    public LinkedList<String> getPlatforms()
+    {
+        return _platforms;
+    }
+    public LinkedList<String> getTitles()
+    {
+        return _titles;
+    }
+    public LinkedList<String> getDescriptions()
+    {
+        return _descriptions;
+    }
+    public LinkedList<String> getGenres()
+    {
+        return _genres;
     }
     
     
