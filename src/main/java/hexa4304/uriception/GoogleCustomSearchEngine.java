@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.util.Pair;
 
 import org.json.*;
 
@@ -55,7 +56,7 @@ public class GoogleCustomSearchEngine {
         this.APIKey = APIKey;
     }
     
-    public List<String> RequestSearch(String searchText) throws IOException, JSONException{
+    public Pair<String, List<String>> RequestSearch(String searchText) throws IOException, JSONException{
         final String RESOURCE_PATH = "ressources.txt";
         final String PAGE_PATH = "page.txt";
 
@@ -77,10 +78,14 @@ public class GoogleCustomSearchEngine {
 
         JSONObject requestResult = new JSONObject(jsonString);
         
+        if (requestResult.has("spelling"))
+        {
+            searchText = requestResult.getJSONObject("spelling").getString("correctedQuery");
+        }
         
         List<String> pageLinks = new ArrayList();
         
-        if (requestResult.get("items") != null)
+        if (requestResult.has("items"))
         {
             JSONArray items = requestResult.getJSONArray("items");
             
@@ -104,6 +109,6 @@ public class GoogleCustomSearchEngine {
             PageWriter.close();
         }
 
-        return pageLinks;
+        return new Pair(searchText, pageLinks);
     }
 }

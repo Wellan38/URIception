@@ -61,6 +61,11 @@ public class SparqlProcessor {
                 qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
                 results = qExe.execSelect();
                 uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
+                
+                for (int i = 0; i < uriList.length(); i++)
+                {
+                    System.out.println(uriList.get(i));
+                }
             }
            
             for (int i = 0; i < uriList.length(); i++)

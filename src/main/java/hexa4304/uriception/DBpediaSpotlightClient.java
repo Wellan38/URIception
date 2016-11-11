@@ -14,6 +14,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.util.Pair;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import org.json.JSONException;
@@ -197,7 +198,11 @@ public class DBpediaSpotlightClient {
     {
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
         List<String> urlList = new ArrayList();
-        urlList = gcse.RequestSearch("Le seigneur des anneaux");
+        
+        Pair<String, List<String>> result = gcse.RequestSearch("Le seigneur des anneaux");
+        
+        urlList = result.getValue();
+        
 //        for(String l: urlList)
 //        {
 //            System.out.println(l);
@@ -216,7 +221,12 @@ public class DBpediaSpotlightClient {
     {
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
         List<String> urlList = new ArrayList();
-        urlList = gcse.RequestSearch(request);
+        
+        Pair<String, List<String>> result = gcse.RequestSearch(request);;
+        
+        urlList = result.getValue();
+        
+        request = result.getKey();
         
         TextManager te = new TextManager("api_key.txt");
         List<List<String>> rawTextList = new ArrayList();
@@ -240,6 +250,7 @@ public class DBpediaSpotlightClient {
         }
         
         LinkedList<String> listURI = new LinkedList(set);
+        
         List<String> refineUriList = te.GetRelevantURI(listURI, request);
         testJenaArq(refineUriList);
         

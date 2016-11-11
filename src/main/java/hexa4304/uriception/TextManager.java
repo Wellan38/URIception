@@ -73,15 +73,28 @@ public class TextManager {
     {
         request = request.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
         String [] requestWord = request.split(" ");
+        
+        List<String> words = new ArrayList();
+        
+        for (int i = 0; i < requestWord.length; i++)
+        {
+            String w = requestWord[i];
+            
+            if (w.length() > 3)
+            {
+                words.add(w);
+            }
+        }
+        
         List<String> newURIList = new ArrayList();
         
         for(String uri: URIList)
         {
             String strTmp = uri.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
             int counter=0;
-            for(int i = 0; i < requestWord.length; i++)
+            for(String w : words)
             {
-                if(strTmp.contains(requestWord[i]))
+                if(strTmp.contains(w))
                 {
                     counter++;
                 }
