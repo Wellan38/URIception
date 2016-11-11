@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,14 @@ public class DBpediaSpotlightClient {
     private final static String API_URL = "http://spotlight.sztaki.hu:2222/";
     private static Exception SpotlightCallException;
     private final static int PARAGRAPH_LENGTH = 10;
+    
+
+    private final static String WIKIPEDIA_ID = "001556729754408094837:r86b9hjdnoe"; // 1
+    private final static String DBPEDIA_ID = "001556729754408094837:hksxp-tujys"; // 1
+    
+//    private final static String API_KEY = "AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI"; // 1
+//    private final static String API_KEY = "AIzaSyDW9tp9BvomeZG2OagHAeolEEyCL0VurJc"; // 2
+        private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
 
     public static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
             String url =    API_URL + "rest/annotate/?"
@@ -154,8 +163,22 @@ public class DBpediaSpotlightClient {
                     sc.nextLine();
                     System.out.print("Saisissez la requête : ");
                     String request = sc.nextLine();
-                    testGlobal(request);
-                    System.out.println("ok");
+                    
+                    System.out.println("Rechercher sur :");
+                    System.out.println("1. Wikipedia");
+                    System.out.println("2. Dbpedia");
+                    
+                    int choix_recherche = sc.nextInt();
+                    
+                    if (choix_recherche == 1)
+                    {
+                        testWikipedia(request);
+                    }
+                    else if (choix_recherche == 2)
+                    {
+                        testDbpedia(request);
+                    }
+                    
                     choiceIsGood = true;
                     break;
 //                case 4 :
@@ -196,10 +219,10 @@ public class DBpediaSpotlightClient {
     
     public static void testGSE() throws IOException, JSONException, SAXException, ParserConfigurationException, XPathExpressionException
     {
-        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
+        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, WIKIPEDIA_ID);
         List<String> urlList = new ArrayList();
         
-        Pair<String, List<String>> result = gcse.RequestSearch("Le seigneur des anneaux");
+        Pair<String, List<String>> result = gcse.RequestSearch("Le seigneur des anneaux", 1);
         
         urlList = result.getValue();
         
@@ -217,12 +240,12 @@ public class DBpediaSpotlightClient {
         }
     }
     
-    public static void testGlobal(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
+    public static void testWikipedia(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
-        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
+        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, WIKIPEDIA_ID);
         List<String> urlList = new ArrayList();
         
-        Pair<String, List<String>> result = gcse.RequestSearch(request);;
+        Pair<String, List<String>> result = gcse.RequestSearch(request, 1);
         
         urlList = result.getValue();
         
@@ -251,6 +274,11 @@ public class DBpediaSpotlightClient {
         
         LinkedList<String> listURI = new LinkedList(set);
         
+        for (String u : listURI)
+        {
+            System.out.println("Spotlight : " + u);
+        }
+        
         List<String> refineUriList = te.GetRelevantURI(listURI, request);
         testJenaArq(refineUriList);
         
@@ -261,7 +289,56 @@ public class DBpediaSpotlightClient {
 //        };
     }
     
-    public static void testJenaArq(List<String> URIList)
+    public static void testDbpedia(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
+    {
+        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, DBPEDIA_ID);
+        List<String> urlList = new ArrayList();
+        
+        int page = 1;
+        
+        TextManager te = new TextManager("api_key.txt");
+        
+        List<String> listURI = new ArrayList();
+        
+        StringBuilder sb = new StringBuilder();
+        
+        while (listURI.size() < 30 && page <= 5)
+        {
+            Pair<String, List<String>> result = gcse.RequestSearch(request, page);
+            
+            urlList = result.getValue();
+        
+            request = result.getKey();
+            
+            for (String url : urlList)
+            {
+                if (url.startsWith("http://dbpedia.org") || url.startsWith("http://fr.dbpedia.org"))
+                {
+                    String[] words = url.split("/");
+
+                    if (words[3].equals("page"))
+                    {
+                        words[3] = "resource";
+                        url = String.join("/", words);
+
+                        listURI.add(url);
+                    }
+                }
+            }
+            
+            page++;
+        }        
+        
+        for (String uri : listURI)
+        {
+            System.out.println("CSE : " + uri);
+        }
+        
+        List<String> refineUriList = te.GetRelevantURI(listURI, request);
+        testJenaArq(refineUriList);
+    }
+    
+    public static void testJenaArq(List<String> URIList) throws IOException
     {
         
         SparqlProcessor sp = new SparqlProcessor();
@@ -269,7 +346,7 @@ public class DBpediaSpotlightClient {
         List<String> listURI = sp.URIFilter(URIList);
         for (String URI : listURI)
         {
-            System.out.print("URI : ");
+            System.out.print("URI finale : ");
             System.out.println(URI);
         };
     }

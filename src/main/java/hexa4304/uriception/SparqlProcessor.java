@@ -6,8 +6,11 @@
 package hexa4304.uriception;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.jena.query.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,17 +20,16 @@ import org.json.JSONObject;
  *
  * @author Flo Macé
  */
-public class SparqlProcessor {
+public class SparqlProcessor
+{
     
-    public static final String VIDEOGAME_CLASS = "http://dbpedia.org/class/yago/Game100456199";
-    
-    public List<String> URIFilter(List<String> URIList)
+    public List<String> URIFilter(List<String> URIList) throws IOException
     {
         List<String> videoGameURIList = new ArrayList();
+        Set<String> uriSet = new HashSet();
         
         for (String uri : URIList)
         {
-            System.out.println("URI List Filter");
             String queryString ="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
                                 "SELECT DISTINCT ?opus WHERE { " +
                                 " ?opus <http://dbpedia.org/ontology/series> <" + uri + ">. " +
@@ -37,8 +39,6 @@ public class SparqlProcessor {
             Query query = QueryFactory.create(queryString);
             QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
             ResultSet results = qExe.execSelect();
-            
-            //ResultSetFormatter.out(System.out, results, query) ;
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -50,36 +50,42 @@ public class SparqlProcessor {
 
             JSONArray uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
             
-            if(uriList.length() == 0)
-            {
-                queryString =   "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
-                                "SELECT DISTINCT * WHERE { " +
-                                " <" + uri + "> rdf:type <http://dbpedia.org/ontology/VideoGame>. " +
-                                "}" ;
+            queryString =   "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
+                            "SELECT DISTINCT * WHERE { " +
+                            " <" + uri + "> rdf:type <http://dbpedia.org/ontology/VideoGame>. " +
+                            "}" ;
 
-                query = QueryFactory.create(queryString);
-                qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
-                results = qExe.execSelect();
-                uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
-                
-                for (int i = 0; i < uriList.length(); i++)
+            query = QueryFactory.create(queryString);
+            qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
+            results = qExe.execSelect();
+            
+            ByteArrayOutputStream outputStreamGame = new ByteArrayOutputStream();
+
+            ResultSetFormatter.outputAsJSON(outputStreamGame, results);
+
+            String jsonStringGame = new String(outputStreamGame.toByteArray());
+
+            JSONObject resultJsonGame = new JSONObject(jsonStringGame);
+            
+            JSONArray checkGame = resultJsonGame.getJSONObject("results").getJSONArray("bindings");
+            
+            if (checkGame.length() > 0)
+            {
+                String isGame = checkGame.getJSONObject(0).getJSONObject("_star_fake").getString("value");
+            
+                if (isGame.equals("1"))
                 {
-                    System.out.println(uriList.get(i));
+                    uriSet.add(uri);
                 }
             }
            
             for (int i = 0; i < uriList.length(); i++)
             {
-                videoGameURIList.add(uriList.getJSONObject(i).getJSONObject("opus").get("value").toString());
+                uriSet.add(uriList.getJSONObject(i).getJSONObject("opus").get("value").toString());
             }
         }
         
-//        System.out.println("List of video games :");
-//        
-//        for (String uri : videoGameURIList)
-//        {
-//            System.out.println(uri);
-//        }
+        videoGameURIList = new ArrayList(uriSet);
         
         return videoGameURIList;
     }

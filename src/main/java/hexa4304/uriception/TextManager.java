@@ -99,10 +99,18 @@ public class TextManager {
                     counter++;
                 }
             }
-            if((counter/requestWord.length) >= 0.5){
-                System.out.println(uri);
+            
+            if (words.size() > 0)
+            {
+                if((counter/words.size()) >= 0.5){
+                    newURIList.add(uri);
+                }
+            }
+            else
+            {
                 newURIList.add(uri);
             }
+            
         }
         
         return newURIList;
