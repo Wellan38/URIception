@@ -141,7 +141,7 @@ public class DBpediaClient {
             return games;
         }
 
-        return null;
+        return new LinkedList<>();
     }
     
     // Renvoie null en cas de problème
@@ -162,6 +162,6 @@ public class DBpediaClient {
             return games;
         }
 
-        return null;
+        return new LinkedList<>();
     }
 }
