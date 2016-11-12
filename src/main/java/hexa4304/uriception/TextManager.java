@@ -7,7 +7,9 @@ package hexa4304.uriception;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.jsoup.Jsoup;
 
 import org.xml.sax.SAXException;
@@ -74,13 +76,33 @@ public class TextManager {
         request = request.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
         String [] requestWord = request.split(" ");
         
+        Set ignoredWords = new HashSet();
+        
+        // Anglais
+        ignoredWords.add("the");
+        ignoredWords.add("a");
+        ignoredWords.add("of");
+        ignoredWords.add("and");
+        
+        //Français
+        ignoredWords.add("le");
+        ignoredWords.add("la");
+        ignoredWords.add("les");
+        ignoredWords.add("de");
+        ignoredWords.add("du");
+        ignoredWords.add("des");
+        ignoredWords.add("à");
+        ignoredWords.add("au");
+        ignoredWords.add("aux");
+        ignoredWords.add("et");
+        
         List<String> words = new ArrayList();
         
         for (int i = 0; i < requestWord.length; i++)
         {
             String w = requestWord[i];
             
-            if (w.length() > 3)
+            if (!w.equals("") && !ignoredWords.contains(w))
             {
                 words.add(w);
             }
@@ -90,7 +112,7 @@ public class TextManager {
         
         for(String uri: URIList)
         {
-            String strTmp = uri.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
+            String strTmp = uri.split("/")[4].replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
             int counter=0;
             for(String w : words)
             {
@@ -102,7 +124,7 @@ public class TextManager {
             
             if (words.size() > 0)
             {
-                if((counter/words.size()) >= 0.5){
+                if(((double)counter/(double)words.size()) >= 0.5){
                     newURIList.add(uri);
                 }
             }

@@ -37,7 +37,7 @@ public class DBpediaSpotlightClient {
     
 //    private final static String API_KEY = "AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI"; // 1
 //    private final static String API_KEY = "AIzaSyDW9tp9BvomeZG2OagHAeolEEyCL0VurJc"; // 2
-        private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
+    private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
 
     public static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
             String url =    API_URL + "rest/annotate/?"
@@ -302,7 +302,7 @@ public class DBpediaSpotlightClient {
         
         StringBuilder sb = new StringBuilder();
         
-        while (listURI.size() < 30 && page <= 5)
+        while (listURI.size() < 10 && page <= 5)
         {
             Pair<String, List<String>> result = gcse.RequestSearch(request, page);
             
@@ -312,27 +312,28 @@ public class DBpediaSpotlightClient {
             
             for (String url : urlList)
             {
-                if (url.startsWith("http://dbpedia.org") || url.startsWith("http://fr.dbpedia.org"))
+//                System.out.println("Raw URL : " + url);
+                
+                String[] words = url.split("/");
+                
+                if (words.length >= 4)
                 {
-                    String[] words = url.split("/");
+                    words[2] = "dbpedia.org";
+                    words[3] = "resource";
 
-                    if (words[3].equals("page"))
-                    {
-                        words[3] = "resource";
-                        url = String.join("/", words);
+                    url = String.join("/", words);
 
-                        listURI.add(url);
-                    }
+                    listURI.add(url);
                 }
             }
             
             page++;
         }        
         
-        for (String uri : listURI)
-        {
-            System.out.println("CSE : " + uri);
-        }
+//        for (String uri : listURI)
+//        {
+//            System.out.println("CSE : " + uri);
+//        }
         
         List<String> refineUriList = te.GetRelevantURI(listURI, request);
         testJenaArq(refineUriList);

@@ -31,14 +31,62 @@ public class SparqlProcessor
         for (String uri : URIList)
         {
             String queryString ="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
+                                "SELECT DISTINCT ?s WHERE { " +
+                                " <" + uri + "> rdf:type <http://dbpedia.org/ontology/VideoGame>."+
+                                " <" + uri + "> <http://dbpedia.org/ontology/series> ?s " +
+                                "}" ;
+            
+            Query query = QueryFactory.create(queryString);
+            QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
+            ResultSet results = qExe.execSelect();
+            
+            ByteArrayOutputStream outputStreamSeries = new ByteArrayOutputStream();
+
+            ResultSetFormatter.outputAsJSON(outputStreamSeries, results);
+
+            String jsonStringSeries = new String(outputStreamSeries.toByteArray());
+
+            JSONObject resultJsonSeries = new JSONObject(jsonStringSeries);
+            
+            JSONArray uriListSeries = resultJsonSeries.getJSONObject("results").getJSONArray("bindings");
+            
+            for (int i = 0; i < uriListSeries.length(); i++)
+            {
+                queryString ="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
+                             "SELECT DISTINCT ?opus WHERE { " +
+                             " ?opus <http://dbpedia.org/ontology/series> <" + uriListSeries.getJSONObject(i).getJSONObject("s").getString("value") + ">. " +
+                             " ?opus rdf:type <http://dbpedia.org/ontology/VideoGame>"+
+                             "}" ;
+                
+                query = QueryFactory.create(queryString);
+                qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
+                results = qExe.execSelect();
+
+                ByteArrayOutputStream outputStreamOpus = new ByteArrayOutputStream();
+
+                ResultSetFormatter.outputAsJSON(outputStreamOpus, results);
+
+                String jsonStringOpus = new String(outputStreamOpus.toByteArray());
+
+                JSONObject resultJsonOpus = new JSONObject(jsonStringOpus);
+
+                JSONArray uriListOpus = resultJsonOpus.getJSONObject("results").getJSONArray("bindings");
+                
+                for (int j = 0; j < uriListOpus.length(); j++)
+                {
+                    uriSet.add(uriListOpus.getJSONObject(j).getJSONObject("opus").getString("value"));
+                }
+            }
+            
+            queryString ="PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
                                 "SELECT DISTINCT ?opus WHERE { " +
                                 " ?opus <http://dbpedia.org/ontology/series> <" + uri + ">. " +
                                 " ?opus rdf:type <http://dbpedia.org/ontology/VideoGame>"+
                                 "}" ;
 
-            Query query = QueryFactory.create(queryString);
-            QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
-            ResultSet results = qExe.execSelect();
+            query = QueryFactory.create(queryString);
+            qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
+            results = qExe.execSelect();
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
