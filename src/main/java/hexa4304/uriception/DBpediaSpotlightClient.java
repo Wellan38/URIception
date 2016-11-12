@@ -55,7 +55,7 @@ public class DBpediaSpotlightClient {
  
     private static LinkedList<String> extractURI (String htmlSource)
     {
-        LinkedList<String> listUri = new LinkedList<>();
+        LinkedList<String> listUri = new LinkedList();
         Document doc = Jsoup.parse(htmlSource);
         
         Elements body = doc.getElementsByTag("body");
