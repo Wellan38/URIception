@@ -22,9 +22,12 @@ import org.json.JSONObject;
  */
 public class SparqlProcessor
 {
-    
+    // filtre les URI et recupere tout les jeux videos appartenant a la franchise.
     public List<String> URIFilter(List<String> URIList) throws IOException
     {
+        System.out.println("Filtre URI 1");
+        
+        
         List<String> videoGameURIList = new ArrayList();
         Set<String> uriSet = new HashSet();
         
@@ -36,19 +39,7 @@ public class SparqlProcessor
                                 " <" + uri + "> <http://dbpedia.org/ontology/series> ?s " +
                                 "}" ;
             
-            Query query = QueryFactory.create(queryString);
-            QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
-            ResultSet results = qExe.execSelect();
-            
-            ByteArrayOutputStream outputStreamSeries = new ByteArrayOutputStream();
-
-            ResultSetFormatter.outputAsJSON(outputStreamSeries, results);
-
-            String jsonStringSeries = new String(outputStreamSeries.toByteArray());
-
-            JSONObject resultJsonSeries = new JSONObject(jsonStringSeries);
-            
-            JSONArray uriListSeries = resultJsonSeries.getJSONObject("results").getJSONArray("bindings");
+            JSONArray uriListSeries = sparqlQuery(queryString);
             
             for (int i = 0; i < uriListSeries.length(); i++)
             {
@@ -58,19 +49,7 @@ public class SparqlProcessor
                              " ?opus rdf:type <http://dbpedia.org/ontology/VideoGame>"+
                              "}" ;
                 
-                query = QueryFactory.create(queryString);
-                qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
-                results = qExe.execSelect();
-
-                ByteArrayOutputStream outputStreamOpus = new ByteArrayOutputStream();
-
-                ResultSetFormatter.outputAsJSON(outputStreamOpus, results);
-
-                String jsonStringOpus = new String(outputStreamOpus.toByteArray());
-
-                JSONObject resultJsonOpus = new JSONObject(jsonStringOpus);
-
-                JSONArray uriListOpus = resultJsonOpus.getJSONObject("results").getJSONArray("bindings");
+                JSONArray uriListOpus = sparqlQuery(queryString);
                 
                 for (int j = 0; j < uriListOpus.length(); j++)
                 {
@@ -84,38 +63,14 @@ public class SparqlProcessor
                                 " ?opus rdf:type <http://dbpedia.org/ontology/VideoGame>"+
                                 "}" ;
 
-            query = QueryFactory.create(queryString);
-            qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
-            results = qExe.execSelect();
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            ResultSetFormatter.outputAsJSON(outputStream, results);
-
-            String jsonString = new String(outputStream.toByteArray());
-
-            JSONObject resultJson = new JSONObject(jsonString);
-
-            JSONArray uriList = resultJson.getJSONObject("results").getJSONArray("bindings");
+            JSONArray uriList = sparqlQuery(queryString);
             
             queryString =   "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "+
                             "SELECT DISTINCT * WHERE { " +
                             " <" + uri + "> rdf:type <http://dbpedia.org/ontology/VideoGame>. " +
                             "}" ;
 
-            query = QueryFactory.create(queryString);
-            qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
-            results = qExe.execSelect();
-            
-            ByteArrayOutputStream outputStreamGame = new ByteArrayOutputStream();
-
-            ResultSetFormatter.outputAsJSON(outputStreamGame, results);
-
-            String jsonStringGame = new String(outputStreamGame.toByteArray());
-
-            JSONObject resultJsonGame = new JSONObject(jsonStringGame);
-            
-            JSONArray checkGame = resultJsonGame.getJSONObject("results").getJSONArray("bindings");
+            JSONArray checkGame = sparqlQuery(queryString);
             
             if (checkGame.length() > 0)
             {
@@ -136,5 +91,19 @@ public class SparqlProcessor
         videoGameURIList = new ArrayList(uriSet);
         
         return videoGameURIList;
+    }
+    
+    private JSONArray sparqlQuery(String queryString)
+    {
+        Query query = QueryFactory.create(queryString);
+        QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
+        ResultSet results = qExe.execSelect();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        String jsonString = new String(outputStream.toByteArray());
+        JSONObject resultJson = new JSONObject(jsonString);
+        
+        return resultJson.getJSONObject("results").getJSONArray("bindings");
     }
 }

@@ -28,17 +28,7 @@ import org.xml.sax.SAXException;
 public class DBpediaSpotlightClient {
 
     private final static String API_URL = "http://spotlight.sztaki.hu:2222/";
-    private static Exception SpotlightCallException;
-    private final static int PARAGRAPH_LENGTH = 10;
     
-
-    private final static String WIKIPEDIA_ID = "001556729754408094837:r86b9hjdnoe"; // 1
-    private final static String DBPEDIA_ID = "001556729754408094837:hksxp-tujys"; // 1
-    
-//    private final static String API_KEY = "AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI"; // 1
-//    private final static String API_KEY = "AIzaSyDW9tp9BvomeZG2OagHAeolEEyCL0VurJc"; // 2
-    private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
-
     public static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
             String url =    API_URL + "rest/annotate/?"
                             + "confidence=" + confidence
@@ -62,50 +52,7 @@ public class DBpediaSpotlightClient {
 
             return response.toString();
     }
-    
-    private static List<String> splitText(String text)
-    {
-//        List<String> paragraphs = new ArrayList();
-//        
-//        String[] words = text.split(" ");
-//        
-//        int nb_paragraphs = words.length / PARAGRAPH_LENGTH + 1;
-//        
-//        for (int i = 0; i < nb_paragraphs; i++)
-//        {
-//            String parag = "";
-//            
-//            for (int j = i * PARAGRAPH_LENGTH; i < (i+1) * PARAGRAPH_LENGTH; j++)
-//            {
-//                parag += words[j] + " ";
-//            }
-//            
-//            paragraphs.add(parag);
-//        }
-//        
-//        return paragraphs;
-
-        List<String> paragraphs = new ArrayList();
-          
-        boolean splitting = true;
-        while(splitting)
-        {            
-            if(text.length() > PARAGRAPH_LENGTH)
-            {
-                paragraphs.add(text.substring(0, PARAGRAPH_LENGTH));
-                text = text.substring(PARAGRAPH_LENGTH,text.length()); 
-            }
-            else
-            {
-                paragraphs.add(text);
-                splitting = false;
-            }
-
-        }
-        
-        return paragraphs;
-    }
-    
+ 
     public static LinkedList<String> extractURI (String htmlSource)
     {
         LinkedList<String> listUri = new LinkedList<>();
@@ -137,10 +84,7 @@ public class DBpediaSpotlightClient {
     {
         Scanner sc = new Scanner(System.in);
         System.out.println("Que voulez vous tester ?");
-        System.out.println("     1) SpotLigth");
-        System.out.println("     2) googleCustomSearchEngine et TextExtraction");
-        System.out.println("     3) Test Global");
-        System.out.println("     4) URI Filter");
+        System.out.println("     1) test");
         System.out.println("\n saisissez votre choix :");
         
         int choix = 0;
@@ -152,14 +96,6 @@ public class DBpediaSpotlightClient {
             switch (choix)
             {
                 case 1 :
-                    testSpotlight();
-                    choiceIsGood = true;
-                    break;
-                case 2 :
-                    testGSE();
-                    choiceIsGood = true;
-                    break;
-                case 3 :
                     sc.nextLine();
                     System.out.print("Saisissez la requête : ");
                     String request = sc.nextLine();
@@ -169,186 +105,27 @@ public class DBpediaSpotlightClient {
                     System.out.println("2. Dbpedia");
                     
                     int choix_recherche = sc.nextInt();
-                    
+                    URIFinder uri = new URIFinder();
+                    List<String> results = new ArrayList();
                     if (choix_recherche == 1)
                     {
-                        testWikipedia(request);
+                        results = uri.wikipediaSearch(request);
                     }
                     else if (choix_recherche == 2)
                     {
-                        testDbpedia(request);
+                        results = uri.dbpediaSearch(request);
+                    }
+                    
+                    for(String res: results)
+                    {
+                        System.out.println(res);
                     }
                     
                     choiceIsGood = true;
                     break;
-//                case 4 :
-//                    testJenaArq();
-//                    choiceIsGood = true;
-//                    break;
                 default:
                     break;
             }
         }
-    }
-    
-    public static void testSpotlight()
-    {
-        
-        
-        String test = "First documented in the 13th century, Berlin was the capital"
-                + " of the Kingdom of Prussia (1701–1918), the German Empire (1871–1918),"
-                + " the Weimar Republic (1919–33) and the Third Reich (1933–45). Berlin in"
-                + " the 1920s was the third largest municipality in the world. After"
-                + " World War II, the city became divided into East Berlin -- the capital "
-                + "of East Germany -- and West Berlin, a West German exclave surrounded by "
-                + "the Berlin Wall from 1961–89. Following German reunification in 1990, the ";
-
-        LinkedList<String> listURI = new LinkedList<>();
-        try {
-            listURI = callAPI(test);
-        } catch (Exception ex) {
-            Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        for (String URI : listURI)
-        {
-            System.out.print("URI : ");
-            System.out.println(URI);
-        };
-    }
-    
-    public static void testGSE() throws IOException, JSONException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
-        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, WIKIPEDIA_ID);
-        List<String> urlList = new ArrayList();
-        
-        Pair<String, List<String>> result = gcse.RequestSearch("Le seigneur des anneaux", 1);
-        
-        urlList = result.getValue();
-        
-//        for(String l: urlList)
-//        {
-//            System.out.println(l);
-//        }
-//        System.out.println();
-        TextManager te = new TextManager("api_key.txt");
-        List<String> rawTextList = new ArrayList();
-        //rawTextList = te.extractTextFromURLList(urlList);
-        for (String l:rawTextList)
-        {
-            System.out.println(l);
-        }
-    }
-    
-    public static void testWikipedia(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
-        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, WIKIPEDIA_ID);
-        List<String> urlList = new ArrayList();
-        
-        Pair<String, List<String>> result = gcse.RequestSearch(request, 1);
-        
-        urlList = result.getValue();
-        
-        request = result.getKey();
-        
-        TextManager te = new TextManager("api_key.txt");
-        List<List<String>> rawTextList = new ArrayList();
-        rawTextList = te.extractTextFromURLList(urlList);
-        
-        Set set = new HashSet();
-        
-        for (List<String> paragraphs:rawTextList)
-        {
-            for (String p : paragraphs)
-            {
-                try
-                {
-                    set.addAll(callAPI(p));
-                }
-                catch (Exception ex)
-                {
-                    Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        
-        LinkedList<String> listURI = new LinkedList(set);
-        
-        for (String u : listURI)
-        {
-            System.out.println("Spotlight : " + u);
-        }
-        
-        List<String> refineUriList = te.GetRelevantURI(listURI, request);
-        testJenaArq(refineUriList);
-        
-//        for (String URI : listURI)
-//        {
-//            System.out.print("URI : ");
-//            System.out.println(URI);
-//        };
-    }
-    
-    public static void testDbpedia(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
-        GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, DBPEDIA_ID);
-        List<String> urlList = new ArrayList();
-        
-        int page = 1;
-        
-        TextManager te = new TextManager("api_key.txt");
-        
-        List<String> listURI = new ArrayList();
-        
-        StringBuilder sb = new StringBuilder();
-        
-        while (listURI.size() < 10 && page <= 5)
-        {
-            Pair<String, List<String>> result = gcse.RequestSearch(request, page);
-            
-            urlList = result.getValue();
-        
-            request = result.getKey();
-            
-            for (String url : urlList)
-            {
-//                System.out.println("Raw URL : " + url);
-                
-                String[] words = url.split("/");
-                
-                if (words.length >= 4)
-                {
-                    words[2] = "dbpedia.org";
-                    words[3] = "resource";
-
-                    url = String.join("/", words);
-
-                    listURI.add(url);
-                }
-            }
-            
-            page++;
-        }        
-        
-//        for (String uri : listURI)
-//        {
-//            System.out.println("CSE : " + uri);
-//        }
-        
-        List<String> refineUriList = te.GetRelevantURI(listURI, request);
-        testJenaArq(refineUriList);
-    }
-    
-    public static void testJenaArq(List<String> URIList) throws IOException
-    {
-        
-        SparqlProcessor sp = new SparqlProcessor();
-        
-        List<String> listURI = sp.URIFilter(URIList);
-        for (String URI : listURI)
-        {
-            System.out.print("URI finale : ");
-            System.out.println(URI);
-        };
     }
 }

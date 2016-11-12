@@ -28,20 +28,15 @@ import org.jsoup.select.Elements;
  * @author Flo Macé
  */
 public class TextManager {
-    
-    public TextManager(String API_key_path)
-    {
-    }
 
+    // extrait le contenue de toutes les pages correspondant aux URLs dans URLList
     public List<List<String>> extractTextFromURLList(List<String> URLList) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
+        System.out.println("extraction texte brut");
         List<List<String>> rawTexts = new ArrayList();
         for (String url:URLList)
         {
-            //extractText(url);
-            
             Elements elements = extractText(url);
-            
             List<String> paragraphs = new ArrayList();
             
             for (Element e : elements)
@@ -56,23 +51,25 @@ public class TextManager {
         return rawTexts;
     }
     
-    public Elements extractText(String url) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException{
+    private Elements extractText(String url) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException{
+        System.out.println("        extraction text de la page "+url);
         String html = Jsoup.connect(url).get().html();
         
         return html2text(html);
-    	
     }
     
-    public static Elements html2text(String html) {
+    private Elements html2text(String html) {
         Document doc = Jsoup.parse(html);
-        
         Elements paragraphs = doc.select("p");
         
         return paragraphs;
     }
     
+    // filtre les URI pour ne conserver que celle correspondant a la requete initiale (utiliser aprés spotlight)
     public List<String> GetRelevantURI(List<String> URIList, String request)
     {
+        System.out.println("text filter");
+        
         request = request.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
         String [] requestWord = request.split(" ");
         
