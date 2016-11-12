@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -118,8 +119,21 @@ public class DBpediaClient {
         for (int i = 0; i < arr.length(); i++)
         {
             JSONObject objI = arr.getJSONObject(i);
-            JSONObject v = objI.getJSONObject(valueTypeToExtract);
-            listStrings.add(v.getString("value"));
+            JSONObject valueExtracted = objI.getJSONObject(valueTypeToExtract);
+          
+            // S'il y a une valeur pour chaque langue, on ne garde que celle en anglais
+            String lang;
+            try {
+                lang = valueExtracted.getString("xml:lang");
+                if (lang.equals("en"))
+                {
+                    listStrings.add(valueExtracted.getString("value"));
+                }
+            }
+            // S'il n'y a pas de propriétés "langue", alors on l'ajoute
+            catch (JSONException e) {
+                listStrings.add(valueExtracted.getString("value"));
+            }
         }
         
         return listStrings;

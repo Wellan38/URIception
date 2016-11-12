@@ -9,7 +9,7 @@ import static hexa4304.uriception.DBpediaClient._requestParameters;
 import static hexa4304.uriception.DBpediaSpotlightClient.testGSE;
 import static hexa4304.uriception.DBpediaSpotlightClient.testGlobal;
 import static hexa4304.uriception.DBpediaSpotlightClient.testSpotlight;
-import static hexa4304.uriception.TextExtractor.extractTextFromURIForDisplay;
+import static hexa4304.uriception.TextExtractor.*;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -33,12 +33,16 @@ public class Main {
         System.out.println("     1) SpotLight");
         System.out.println("     2) googleCustomSearchEngine et TextExtraction");
         System.out.println("     3) ???");
-        System.out.println("     4) récupérer et afficher infos jeu");
-        System.out.println("     5) récupérer les jeux de survie");
+        System.out.println("     4) récupérer et afficher URI jeu");
+        System.out.println("     5) affiche les jeux de survie présent sur DBpedia");
+        System.out.println("     6) récupérer et afficher infos jeu parsées");
         System.out.println("\n saisissez votre choix :");
         
         int choix = 0;
         boolean choiceIsGood = false;
+        String title;
+        GameInfo gameInfo;
+        
         while (!choiceIsGood)
         {
             System.out.println("**");
@@ -63,8 +67,8 @@ public class Main {
                 case 4 :
                     sc.nextLine();
                     System.out.print("Saisissez le nom du jeu (format DBPedia avec _ à la place de \" \") : ");
-                    String title = sc.nextLine();
-                    GameInfo gameInfo = new GameInfo(title);
+                    title = sc.nextLine();
+                    gameInfo = new GameInfo(title);
                     gameInfo.testGameInfoURI();
                     choiceIsGood = true;
                     break;
@@ -78,6 +82,13 @@ public class Main {
                     {
                         System.out.println(extractTextFromURIForDisplay(t));
                     }
+                    choiceIsGood = true;
+                case 6 :
+                    sc.nextLine();
+                    System.out.print("Saisissez le nom du jeu (format DBPedia avec _ à la place de \" \") : ");
+                    title = sc.nextLine();
+                    gameInfo = new GameInfo(title);
+                    gameInfo.testGameInfoDisplay();
                     choiceIsGood = true;
                     break;
                 default:
