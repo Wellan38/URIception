@@ -105,7 +105,9 @@ public class DBpediaClient {
     }
     
     // Extrait les données du document "json" (sous forme de String) envoyé en paramètre
-    public static LinkedList<String> jsonResultToStrings(String json)
+    // valueTypeToExtract désigne qu'elle partie de la requête nous interesse c'est à dire
+    // o, p, ou v. Il faut donc indiqué une de ces 3 valeur en string (cf build Request)
+    public static LinkedList<String> jsonResultToStrings(String json, String valueTypeToExtract)
     {
         LinkedList<String> listStrings = new LinkedList<>();
         
@@ -116,7 +118,7 @@ public class DBpediaClient {
         for (int i = 0; i < arr.length(); i++)
         {
             JSONObject objI = arr.getJSONObject(i);
-            JSONObject v = objI.getJSONObject("v");
+            JSONObject v = objI.getJSONObject(valueTypeToExtract);
             listStrings.add(v.getString("value"));
         }
         
@@ -137,7 +139,7 @@ public class DBpediaClient {
 
         if(gamesJsonReturned != null)
         {
-            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned);
+            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned,"o");
             return games;
         }
 
@@ -159,7 +161,7 @@ public class DBpediaClient {
 
         if(gamesJsonReturned != null)
         {
-            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned);
+            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned,"v");
             return games;
         }
 

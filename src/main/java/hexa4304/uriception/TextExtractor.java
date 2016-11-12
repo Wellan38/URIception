@@ -65,7 +65,7 @@ public class TextExtractor {
     // Par exemple, prend en paramètre "http://dbpedia.org/resource/PlayStation_4" et renvoie "PlayStation 4"
     public static String extractTextFromURIForDisplay(String uri)
     {
-        String text = uri.substring(uri.lastIndexOf("/"));
+        String text = uri.substring(uri.lastIndexOf("/")+1);
         text = text.replace("_", " ");
         return text;
     }

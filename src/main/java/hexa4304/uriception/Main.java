@@ -9,6 +9,7 @@ import static hexa4304.uriception.DBpediaClient._requestParameters;
 import static hexa4304.uriception.DBpediaSpotlightClient.testGSE;
 import static hexa4304.uriception.DBpediaSpotlightClient.testGlobal;
 import static hexa4304.uriception.DBpediaSpotlightClient.testSpotlight;
+import static hexa4304.uriception.TextExtractor.extractTextFromURIForDisplay;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -33,6 +34,7 @@ public class Main {
         System.out.println("     2) googleCustomSearchEngine et TextExtraction");
         System.out.println("     3) ???");
         System.out.println("     4) récupérer et afficher infos jeu");
+        System.out.println("     5) récupérer les jeux de survie");
         System.out.println("\n saisissez votre choix :");
         
         int choix = 0;
@@ -74,7 +76,7 @@ public class Main {
                             "<http://dbpedia.org/resource/Survival_game>");
                     for(String t : listGames)
                     {
-                        System.out.println(t);
+                        System.out.println(extractTextFromURIForDisplay(t));
                     }
                     choiceIsGood = true;
                     break;
