@@ -79,5 +79,4 @@ public class DBpediaSpotlightClient {
         }
         return extractURI(htmlResponse);
     }
-  
 }
