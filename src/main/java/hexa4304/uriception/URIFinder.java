@@ -74,7 +74,7 @@ public class URIFinder {
                 }
             }
         }
-        System.out.println("fin appel a spotlight");
+//        System.out.println("fin appel a spotlight");
         
         LinkedList<String> listURI = new LinkedList(set);
         
@@ -84,7 +84,7 @@ public class URIFinder {
     
     public List<String> dbpediaSearch(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
-        System.out.println("recherche dbpedia.");
+//        System.out.println("recherche dbpedia.");
         
         // initialisation du moteur de recherche sur dbpedia avec la clé de l'API google et l'identifiant du moteur de recherche.
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine(API_KEY, DBPEDIA_ID);
@@ -100,7 +100,7 @@ public class URIFinder {
         
         while (listURI.size() < 10 && page <= 5)
         {
-            System.out.println("extraction url page "+page);
+//            System.out.println("extraction url page "+page);
             
             // recuperation des resultats (par pair <Requete corrigé, url>
                 // recutperaton de la requete corrigé (eviter faute d'orthographe) pour le premier filre (dans textManager)
@@ -136,7 +136,6 @@ public class URIFinder {
     // filtre pour ne conserver que les uri correspondant a des jeux videos.
     private List<String> sparqlFilter(List<String> URIList) throws IOException
     {
-        System.out.println("Filtre sparql");
         SparqlProcessor sp = new SparqlProcessor();
         
         List<String> listURI = sp.URIFilter(URIList);

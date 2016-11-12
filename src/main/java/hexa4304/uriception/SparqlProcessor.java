@@ -25,7 +25,7 @@ public class SparqlProcessor
     // filtre les URI et recupere tout les jeux videos appartenant a la franchise.
     public List<String> URIFilter(List<String> URIList) throws IOException
     {
-        System.out.println("Filtre URI 1");
+//        System.out.println("Filtre Sparql");
         
         
         List<String> videoGameURIList = new ArrayList();

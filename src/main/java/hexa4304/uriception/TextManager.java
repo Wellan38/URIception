@@ -68,7 +68,7 @@ public class TextManager {
     // filtre les URI pour ne conserver que celle correspondant a la requete initiale (utiliser aprés spotlight)
     public List<String> GetRelevantURI(List<String> URIList, String request)
     {
-        System.out.println("text filter");
+//        System.out.println("text filter");
         
         request = request.replaceAll("^[^a-zA-Z0-9\\s]+|[^a-zA-Z0-9\\s]+$", "").toLowerCase();
         String [] requestWord = request.split(" ");

@@ -57,8 +57,6 @@ public class GoogleCustomSearchEngine {
     }
     
     public Pair<String, List<String>> RequestSearch(String searchText, int page) throws IOException, JSONException{
-        final String RESOURCE_PATH = "ressources.txt";
-        final String PAGE_PATH = "page.txt";
 
         URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+APIKey+ "&cx="+ customEngineIdentifier +"&q="+ URLEncoder.encode(searchText, "UTF-8")+ "&start=" + ((page - 1) * 10 + 1) +"&alt=json");
         HttpURLConnection conn2 = (HttpURLConnection) url.openConnection();
@@ -96,17 +94,6 @@ public class GoogleCustomSearchEngine {
 
                 pageLinks.add(link);
             }
-
-            File page_file = new File(PAGE_PATH);
-            BufferedWriter PageWriter = new BufferedWriter(new FileWriter(page_file));
-            //System.out.println("\nPages:\n");
-            for (String l : pageLinks)
-            {
-                //System.out.println(l);
-                PageWriter.write(l);
-                PageWriter.newLine();
-            }
-            PageWriter.close();
         }
 
         return new Pair(searchText, pageLinks);

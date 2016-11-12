@@ -29,7 +29,7 @@ public class DBpediaSpotlightClient {
 
     private final static String API_URL = "http://spotlight.sztaki.hu:2222/";
     
-    public static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
+    private static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
             String url =    API_URL + "rest/annotate/?"
                             + "confidence=" + confidence
                             + "&support=" + support
@@ -53,7 +53,7 @@ public class DBpediaSpotlightClient {
             return response.toString();
     }
  
-    public static LinkedList<String> extractURI (String htmlSource)
+    private static LinkedList<String> extractURI (String htmlSource)
     {
         LinkedList<String> listUri = new LinkedList<>();
         Document doc = Jsoup.parse(htmlSource);
@@ -79,53 +79,5 @@ public class DBpediaSpotlightClient {
         }
         return extractURI(htmlResponse);
     }
-    
-    public static void main(String[] args) throws IOException, JSONException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Que voulez vous tester ?");
-        System.out.println("     1) test");
-        System.out.println("\n saisissez votre choix :");
-        
-        int choix = 0;
-        boolean choiceIsGood = false;
-        while (!choiceIsGood)
-        {
-            System.out.println("**");
-            choix = sc.nextInt();
-            switch (choix)
-            {
-                case 1 :
-                    sc.nextLine();
-                    System.out.print("Saisissez la requête : ");
-                    String request = sc.nextLine();
-                    
-                    System.out.println("Rechercher sur :");
-                    System.out.println("1. Wikipedia");
-                    System.out.println("2. Dbpedia");
-                    
-                    int choix_recherche = sc.nextInt();
-                    URIFinder uri = new URIFinder();
-                    List<String> results = new ArrayList();
-                    if (choix_recherche == 1)
-                    {
-                        results = uri.wikipediaSearch(request);
-                    }
-                    else if (choix_recherche == 2)
-                    {
-                        results = uri.dbpediaSearch(request);
-                    }
-                    
-                    for(String res: results)
-                    {
-                        System.out.println(res);
-                    }
-                    
-                    choiceIsGood = true;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+  
 }
