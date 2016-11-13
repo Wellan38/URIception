@@ -10,24 +10,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.jsoup.Jsoup;
-
 import org.xml.sax.SAXException;
-
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 
-
-/**
- *
- */
 public class TextExtractor {
     
-    public TextExtractor(String API_key_path)
-    {
-    }
-
     public List<String> extractTextFromURLList(List<String> URLList) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
         List<String> rawTexts = new ArrayList();
