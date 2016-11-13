@@ -12,7 +12,6 @@
             <version>1.10.1</version>
         </dependency>
         <dependency>
-<<<<<<< HEAD
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
             <version>3.1.0</version>
@@ -27,7 +26,8 @@
             <artifactId>jena</artifactId>
             <version>3.1.0</version>
             <type>pom</type>
-=======
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20160810</version>
