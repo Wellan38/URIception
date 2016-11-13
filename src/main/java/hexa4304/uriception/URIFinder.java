@@ -36,7 +36,7 @@ public class URIFinder {
     private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
     
     // moteur de recherche sur Wikipedia
-    public List<String> wikipediaSearch(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
+    public static List<String> wikipediaSearch(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
         System.out.println("recherche wikipedia");
         
@@ -82,7 +82,7 @@ public class URIFinder {
         return sparqlFilter(refineUriList);
     }
     
-    public List<String> dbpediaSearch(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
+    public static List<String> dbpediaSearch(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
     {
 //        System.out.println("recherche dbpedia.");
         
@@ -134,7 +134,7 @@ public class URIFinder {
     }
     
     // filtre pour ne conserver que les uri correspondant a des jeux videos.
-    private List<String> sparqlFilter(List<String> URIList) throws IOException
+    private static List<String> sparqlFilter(List<String> URIList) throws IOException
     {
         SparqlProcessor sp = new SparqlProcessor();
         

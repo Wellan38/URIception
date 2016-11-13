@@ -156,43 +156,43 @@ public class GameInfo {
         }
         System.out.println();
         System.out.println("- Genres du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_genres))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_genres))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Description(s) du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_descriptions))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_descriptions))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Développeur(s) du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_developers))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_developers))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Designer(s) du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_designers))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_designers))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Editeur(s) du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_publishers))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_publishers))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Date(s) de sortie du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_releaseDates))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_releaseDates))
         {
             System.out.println(s);
         }
         System.out.println();
         System.out.println("- Plateforme(s) du jeu :");
-        for (String s : TextExtractor.extractTextsListFromURIForDisplay(_platforms))
+        for (String s : TextManager.extractTextsListFromURIForDisplay(_platforms))
         {
             System.out.println(s);
         }

@@ -32,7 +32,6 @@
             <artifactId>json</artifactId>
             <version>20160810</version>
             <type>jar</type>
->>>>>>> origin/dev
         </dependency>
     </dependencies>
     <properties>

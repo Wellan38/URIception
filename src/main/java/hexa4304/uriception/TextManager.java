@@ -8,6 +8,7 @@ package hexa4304.uriception;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.jsoup.Jsoup;
@@ -133,5 +134,32 @@ public class TextManager {
         }
         
         return newURIList;
+    }
+    
+    // Renvoie les données sous forme de texte à des fins d'affichage (sans le texte "dpbedia/ontology...")
+    // Prend en paramètre une liste d'URI et met en forme des String pour afficher les données à un humain
+    public static LinkedList<String> extractTextsListFromURIForDisplay(LinkedList<String> uri)
+    {
+        LinkedList<String> textsForDisplay = new LinkedList<>();
+        for (String s : uri)
+        {
+            textsForDisplay.add(extractTextFromURIForDisplay(s));
+        }
+        return textsForDisplay;
+    }
+    
+    // Prend en paramètre une URI et met en forme une String pour afficher la donnée à un humain
+    // Par exemple, prend en paramètre "http://dbpedia.org/resource/PlayStation_4" et renvoie "PlayStation 4"
+    public static String extractTextFromURIForDisplay(String uri)
+    {
+        // Si l'uri ne contient pas le mot dbpedia, c'est qu'il n'y a pas besoin de la parser
+        if (uri.contains("dbpedia"))
+        {
+            String text = uri.substring(uri.lastIndexOf("/") + 1);
+            text = text.replace("_", " ");
+            return text;
+        }
+        
+        return uri;
     }
 }
