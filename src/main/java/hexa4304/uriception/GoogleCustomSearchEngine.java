@@ -6,22 +6,17 @@
 package hexa4304.uriception;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.util.Pair;
 
 import org.json.*;
 
-/**
- *
- * @author Flo Macé
- */
 public class GoogleCustomSearchEngine {
     
     private String customEngineIdentifier;
@@ -54,11 +49,9 @@ public class GoogleCustomSearchEngine {
         this.APIKey = APIKey;
     }
     
-    public List<String> RequestSearch(String searchText) throws IOException, JSONException{
-        final String RESOURCE_PATH = "ressources.txt";
-        final String PAGE_PATH = "page.txt";
+    public Pair<String, List<String>> RequestSearch(String searchText, int page) throws IOException, JSONException{
 
-        URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+APIKey+ "&cx="+ customEngineIdentifier +"&q="+    searchText+"&alt=json");
+        URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+APIKey+ "&cx="+ customEngineIdentifier +"&q="+ URLEncoder.encode(searchText, "UTF-8")+ "&start=" + ((page - 1) * 10 + 1) +"&alt=json");
         HttpURLConnection conn2 = (HttpURLConnection) url.openConnection();
 
         conn2.setRequestMethod("GET");
@@ -75,28 +68,27 @@ public class GoogleCustomSearchEngine {
         }
 
         JSONObject requestResult = new JSONObject(jsonString);
-        JSONArray items = requestResult.getJSONArray("items");
-
+        
+        if (requestResult.has("spelling"))
+        {
+            searchText = requestResult.getJSONObject("spelling").getString("correctedQuery");
+        }
+        
         List<String> pageLinks = new ArrayList();
-
-        for (int i = 0; i < items.length(); i++)
+        
+        if (requestResult.has("items"))
         {
-            JSONObject obj = items.getJSONObject(i);
-            String link = obj.getString("link");
+            JSONArray items = requestResult.getJSONArray("items");
+            
+            for (int i = 0; i < items.length(); i++)
+            {
+                JSONObject obj = items.getJSONObject(i);
+                String link = obj.getString("link");
 
-            pageLinks.add(link);
+                pageLinks.add(link);
+            }
         }
 
-        File page_file = new File(PAGE_PATH);
-        BufferedWriter PageWriter = new BufferedWriter(new FileWriter(page_file));
-        System.out.println("\nPages:\n");
-        for (String l : pageLinks)
-        {
-            System.out.println(l);
-            PageWriter.write(l);
-            PageWriter.newLine();
-        }
-        PageWriter.close();
-        return pageLinks;
+        return new Pair(searchText, pageLinks);
     }
 }
