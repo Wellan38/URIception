@@ -60,7 +60,7 @@ public class Main {
                     sc.nextLine();
                     System.out.print("Saisissez le nom du jeu (format DBPedia avec _ à la place de \" \") : ");
                     String title = sc.nextLine();
-                    GameInfo gameInfo = new GameInfo(title);
+                    GameInfo gameInfo = new GameInfo("Dishonored");
                     gameInfo.testGameInfo();
                     choiceIsGood = true;
                     break;

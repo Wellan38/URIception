@@ -92,8 +92,6 @@ public class GameInfo {
     // Récupère toutes les infos d'un jeu et affiche les genres de ce jeu
     public void testGameInfo() throws IOException
     {
-        getAllInformation();
-        
         System.out.println("Genres du jeu :");
         for (String s : _genres)
         {
