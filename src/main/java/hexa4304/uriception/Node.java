@@ -88,8 +88,11 @@ public class Node extends Parent {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                Node.this.getExplorer().setTitle(Node.this.getObject().getTitle());
-                Node.this.getExplorer().setContent(Node.this.getObject().getContent());
+                try {
+                    Node.this.getExplorer().makeContent(new GameInfo(Node.this.getObject().getUri()));
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         });
         return button;

@@ -60,4 +60,16 @@ public class TextExtractor {
 
         return uri;
     }
+
+    // Prend en paramètre une URI et met en forme une String pour afficher la donnée à un humain
+    // Par exemple, prend en paramètre "http://dbpedia.org/resource/PlayStation_4" et renvoie "PlayStation 4"
+    public static String extractTextFromURLForSearch(String uri) {
+        // Si l'uri ne contient pas le mot dbpedia, c'est qu'il n'y a pas besoin de la parser
+        if (uri.contains("dbpedia")) {
+            String text = uri.substring(uri.lastIndexOf("/") + 1);
+            return text;
+        }
+
+        return uri;
+    }
 }

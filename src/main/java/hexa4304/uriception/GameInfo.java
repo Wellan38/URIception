@@ -23,6 +23,10 @@ public class GameInfo {
 
     // Méthodes ----------------------------------------------------------------
     public GameInfo(String title) throws IOException {
+        /*if(title.substring(0, 6).equals("http://") || title.substring(0, 7).equals("https://")) {
+            title = TextExtractor.extractTextFromURIForDisplay(title);
+        }*/
+
         _titles = new LinkedList<>();
         _titles.add(title);
 
@@ -40,7 +44,7 @@ public class GameInfo {
     // Récupère toutes les informations concernant le jeu.
     // *** Le titre du jeu doit être connu ***
     public void getAllInformation() throws IOException {
-        String objectParameter = ":" + _titles.getFirst();
+        String objectParameter = "<" + _titles.getFirst() + ">";
 
         _developers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DEVELOPERS.value()]);
         _designers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESIGNERS.value()]);

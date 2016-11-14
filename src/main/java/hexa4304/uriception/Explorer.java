@@ -8,14 +8,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,8 +31,7 @@ public class Explorer extends Application {
     @FXML
     private ImageView image;
 
-    @FXML
-    private Text content;
+    private TextFlow contentFlow;
 
     @FXML
     private TextField searchField;
@@ -59,7 +61,7 @@ public class Explorer extends Application {
             primaryStage.show();
 
             this.title = (Text) scene.lookup("#title");
-            this.content = (Text) scene.lookup("#content");
+            this.contentFlow = (TextFlow) scene.lookup("#contentFlow");
             this.image = (ImageView) scene.lookup("#image");
             this.searchField = (TextField) scene.lookup("#searchField");
             this.searchButton = (Button) scene.lookup("#searchButton");
@@ -68,7 +70,10 @@ public class Explorer extends Application {
                 @Override
                 public void handle(ActionEvent e) {
                     try {
-                        Explorer.this.makeContent(new GameInfo(Explorer.this.getSearchField().getText().trim().replace(' ', '_')));
+                        String search = Explorer.this.getSearchField().getText().trim();
+                        URIFinder uriFinder = new URIFinder();
+                        ArrayList<String> list = (ArrayList<String>) uriFinder.dbpediaSearch(search);
+                        makeSearchResult(search, list);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -78,7 +83,6 @@ public class Explorer extends Application {
             this.graphPane = (Pane) scene.lookup("#graph");
 
             this.title.setText(DEFAULT_TITLE);
-            this.content.setText(DEFAULT_CONTENT);
             this.image.setImage(new Image(DEFAULT_IMAGE_URL));
 
             // TEST
@@ -112,18 +116,43 @@ public class Explorer extends Application {
         this.title.setText(title);
     }
 
-    public void setContent(String content) {
-        this.content.setText(content);
+    public void makeSearchResult(String search, ArrayList<String> list) {
+        this.title.setText("Resultat pour '" + search + "'");
+        clearContentFlow();
+        for(String uri : list) {
+            Hyperlink hyperlink = new Hyperlink();
+            hyperlink.setText(TextExtractor.extractTextFromURIForDisplay(uri));
+            hyperlink.setPrefWidth(280);
+            hyperlink.setMaxWidth(280);
+            hyperlink.setMinWidth(280);
+            hyperlink.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    try {
+                        Explorer.this.makeContent(new GameInfo(uri));
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            });
+            Explorer.this.addContentToFlow(hyperlink);
+        }
     }
 
     public void makeContent(GameInfo info) {
+        clearContentFlow();
         URIObject mainObject = new URIObject();
-        String title = info.getURITitles().get(0).replace('_', ' ');
+        String mainUri = info.getURITitles().get(0);
+        String title = TextExtractor.extractTextFromURIForDisplay(mainUri);
         String content = makeObjectContent(info);
         mainObject.setTitle(title);
+        mainObject.setUri(mainUri);
         mainObject.setContent(content);
         this.setTitle(title);
-        this.setContent(content);
+        Text text = new Text(content);
+        text.setWrappingWidth(280);
+        clearContentFlow();
+        addContentToFlow(text);
         String genre = info.getURIGenres().get(0);
         LinkedList<URIObject> relatedObjects = new LinkedList<>();
         LinkedList<String> related = DBpediaClient.getObjectByPropertyValue(DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()], genre);
@@ -134,7 +163,7 @@ public class Explorer extends Application {
                 break;
             }
             URIObject o = new URIObject();
-            String readableTitle = makeSimpleURI(uri);
+            String readableTitle = TextExtractor.extractTextFromURIForDisplay(uri);
             o.setTitle(readableTitle);
             o.setUri(uri);
             o.setRelation("Genre:" + genre);
@@ -164,7 +193,7 @@ public class Explorer extends Application {
                     x -= 50;
                 }
                 Node n = new Node(x, y, o, this);
-                this.addRelation(new Relation(mainNode, n, "Genre : " + makeSimpleURI(o.getRelation())));
+                this.addRelation(new Relation(mainNode, n, "Genre : " + TextExtractor.extractTextFromURIForDisplay(o.getRelation())));
                 nodes[i] = n;
                 i++;
             }
@@ -173,21 +202,6 @@ public class Explorer extends Application {
         for (int j = 0; j < numberOfPoints; j++) {
             this.addNode(nodes[j]);
         }
-    }
-
-    public String makeSimpleURI(String uri) {
-
-        Pattern pattern = Pattern.compile("[^, /]+$");
-
-        Matcher matcher = pattern.matcher(uri);
-        String readable = uri;
-        if (matcher.find()) {
-            readable = matcher.group(0);
-        }
-        readable = readable.replace('_', ' ');
-        readable = readable.replaceAll("\\(.+$", "");
-
-        return readable;
     }
 
     public String makeObjectContent(GameInfo info) {
@@ -216,14 +230,6 @@ public class Explorer extends Application {
         this.image = image;
     }
 
-    public Text getContent() {
-        return content;
-    }
-
-    public void setContent(Text content) {
-        this.content = content;
-    }
-
     public TextField getSearchField() {
         return searchField;
     }
@@ -242,6 +248,14 @@ public class Explorer extends Application {
 
     public void setGraphPane(Pane graphPane) {
         this.graphPane = graphPane;
+    }
+
+    public void addContentToFlow(javafx.scene.Node node) {
+        this.contentFlow.getChildren().add(node);
+    }
+
+    public void clearContentFlow() {
+        this.contentFlow.getChildren().clear();
     }
 }
 

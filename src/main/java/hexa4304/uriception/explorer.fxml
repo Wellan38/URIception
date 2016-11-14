@@ -42,7 +42,11 @@
                            </font>
                         </Text>
                         <ImageView id="image" fitHeight="200.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
-                        <Text id="content" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="280.0" />
+                        <ScrollPane prefHeight="215.0" prefViewportHeight="198.0" prefViewportWidth="300.0" prefWidth="300.0">
+                           <content>
+                              <TextFlow id="contentFlow" prefHeight="200.0" prefWidth="280.0" />
+                           </content>
+                        </ScrollPane>
                         <HBox prefHeight="100.0" prefWidth="200.0" />
                      </children>
                      <padding>
