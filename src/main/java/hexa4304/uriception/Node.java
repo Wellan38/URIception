@@ -19,20 +19,17 @@ public class Node extends Parent {
     private double x;
     private double y;
 
-    private String relation;
-
     private URIObject object;
 
     private Explorer explorer;
 
     private Tooltip tooltip;
 
-    public Node(double x, double y, URIObject o, Explorer e, String r) {
+    public Node(double x, double y, URIObject o, Explorer e) {
         this.object = o;
         this.explorer = e;
         this.x = x;
         this.y = y;
-        this.relation = r;
 
         this.getChildren().add(this.makeEllipse());
         this.getChildren().add(this.makeButton());
@@ -47,8 +44,6 @@ public class Node extends Parent {
 
         this.getChildren().add(this.makeEllipse());
         this.getChildren().add(this.makeButton());
-
-        this.relation = this.DEFAULT_RELATION;
     }
 
     public double getX() {
@@ -106,14 +101,6 @@ public class Node extends Parent {
 
     public void setY(double y) {
         this.y = y;
-    }
-
-    public String getRelation() {
-        return relation;
-    }
-
-    public void setRelation(String relation) {
-        this.relation = relation;
     }
 
     public void setObject(URIObject object) {

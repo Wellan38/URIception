@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -17,50 +18,47 @@ import org.jsoup.select.Elements;
 public class DBpediaSpotlightClient {
 
     private final static String API_URL = "http://spotlight.sztaki.hu:2222/";
-    
+
     private static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
-            String url =    API_URL + "rest/annotate/?"
-                            + "confidence=" + confidence
-                            + "&support=" + support
-                            + "&text=" + URLEncoder.encode(text, "utf-8");
+        String url = API_URL + "rest/annotate/?"
+                + "confidence=" + confidence
+                + "&support=" + support
+                + "&text=" + URLEncoder.encode(text, "utf-8");
 
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            // optional default is GET
-            con.setRequestMethod("GET");
+        // optional default is GET
+        con.setRequestMethod("GET");
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
 
-            while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-            }
-            in.close();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
 
-            return response.toString();
+        return response.toString();
     }
- 
-    private static LinkedList<String> extractURI (String htmlSource)
-    {
+
+    private static LinkedList<String> extractURI(String htmlSource) {
         LinkedList<String> listUri = new LinkedList();
         Document doc = Jsoup.parse(htmlSource);
-        
+
         Elements body = doc.getElementsByTag("body");
         Elements uriElements = body.get(0).getElementsByTag("a");
-        
-        for(Element balise  : uriElements)
-        {
+
+        for (Element balise : uriElements) {
             listUri.push(balise.attributes().get("title"));
         }
-            
+
         return listUri;
     }
-    
-    public static LinkedList<String> callAPI(String text) throws Exception
-    {
-        String htmlResponse = "";       
+
+    public static LinkedList<String> callAPI(String text) throws Exception {
+        String htmlResponse = "";
         try {
             htmlResponse = DBpediaSpotlightClient.getSpotlightResponse(text, 0.8, 0);
         } catch (IOException ex) {
@@ -68,5 +66,4 @@ public class DBpediaSpotlightClient {
         }
         return extractURI(htmlResponse);
     }
-
 }
