@@ -19,14 +19,13 @@ public class GameInfo {
     private LinkedList<String> _platforms;
     private LinkedList<String> _titles;
     private LinkedList<String> _descriptions;
-    private LinkedList<String> _genres;  
-    
+    private LinkedList<String> _genres;
+
     // Méthodes ----------------------------------------------------------------
-    public GameInfo(String title) throws IOException
-    {
+    public GameInfo(String title) throws IOException {
         _titles = new LinkedList<>();
         _titles.add(title);
-        
+
         _developers = new LinkedList<>();
         _designers = new LinkedList<>();
         _publishers = new LinkedList<>();
@@ -34,16 +33,15 @@ public class GameInfo {
         _platforms = new LinkedList<>();
         _descriptions = new LinkedList<>();
         _genres = new LinkedList<>();
-        
+
         getAllInformation();
     }
-    
+
     // Récupère toutes les informations concernant le jeu.
     // *** Le titre du jeu doit être connu ***
-    public void getAllInformation() throws IOException
-    {
+    public void getAllInformation() throws IOException {
         String objectParameter = ":" + _titles.getFirst();
-        
+
         _developers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DEVELOPERS.value()]);
         _designers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESIGNERS.value()]);
         _publishers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.PUBLISHERS.value()]);
@@ -52,49 +50,46 @@ public class GameInfo {
         _descriptions = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESCRIPTIONS.value()]);
         _genres = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()]);
     }
-    
-    
+
+
     // Getters
-    public LinkedList<String> getDevelopers()
-    {
+    public LinkedList<String> getDevelopers() {
         return _developers;
     }
-    public LinkedList<String> getDesigners()
-    {
+
+    public LinkedList<String> getDesigners() {
         return _designers;
     }
-    public LinkedList<String> getPublishers()
-    {
+
+    public LinkedList<String> getPublishers() {
         return _publishers;
     }
-    public LinkedList<String> getReleaseDates()
-    {
+
+    public LinkedList<String> getReleaseDates() {
         return _releaseDates;
     }
-    public LinkedList<String> getPlatforms()
-    {
+
+    public LinkedList<String> getPlatforms() {
         return _platforms;
     }
-    public LinkedList<String> getTitles()
-    {
+
+    public LinkedList<String> getTitles() {
         return _titles;
     }
-    public LinkedList<String> getDescriptions()
-    {
+
+    public LinkedList<String> getDescriptions() {
         return _descriptions;
     }
-    public LinkedList<String> getGenres()
-    {
+
+    public LinkedList<String> getGenres() {
         return _genres;
     }
-    
-    
+
+
     // Récupère toutes les infos d'un jeu et affiche les genres de ce jeu
-    public void testGameInfo() throws IOException
-    {
+    public void testGameInfo() throws IOException {
         System.out.println("Genres du jeu :");
-        for (String s : _genres)
-        {
+        for (String s : _genres) {
             System.out.println(s);
         }
     }

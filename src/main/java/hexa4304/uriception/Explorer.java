@@ -68,8 +68,8 @@ public class Explorer extends Application {
                 @Override
                 public void handle(ActionEvent e) {
                     try {
-                        Explorer.this.makeContent(new GameInfo(Explorer.this.getSearchField().getText().trim()));
-                    } catch(Exception exception) {
+                        Explorer.this.makeContent(new GameInfo(Explorer.this.getSearchField().getText().trim().replace(' ', '_')));
+                    } catch (Exception exception) {
                         exception.printStackTrace();
                     }
                 }
@@ -118,29 +118,26 @@ public class Explorer extends Application {
 
     public void makeContent(GameInfo info) {
         URIObject mainObject = new URIObject();
-        String title = info.getTitles().get(0);
-        String content = "";
+        String title = info.getTitles().get(0).replace('_', ' ');
+        String content = makeObjectContent(info);
         mainObject.setTitle(title);
         mainObject.setContent(content);
         this.setTitle(title);
         this.setContent(content);
         String genre = info.getGenres().get(0);
-        /*Pattern pattern = Pattern.compile("[^, /]+$");
-        Matcher matcher = pattern.matcher(genre);
-        if (matcher.find())
-        {
-            genre = matcher.group(0);
-        }*/
         LinkedList<URIObject> relatedObjects = new LinkedList<>();
         LinkedList<String> related = DBpediaClient.getObjectByPropertyValue(DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()], genre);
         System.out.println(related.get(0));
         int i = 0;
-        for(String uri : related) {
-            if(i >= 20) {
+        for (String uri : related) {
+            if (i >= 20) {
                 break;
             }
             URIObject o = new URIObject();
-            o.setTitle(uri);
+            String readableTitle = makeSimpleURI(uri);
+            o.setTitle(readableTitle);
+            o.setUri(uri);
+            o.setRelation("Genre:" + genre);
             relatedObjects.add(o);
             i++;
         }
@@ -152,7 +149,7 @@ public class Explorer extends Application {
         Node mainNode = new Node(mainObject, this);
         int numberOfPoints = objects.size();
         Node nodes[] = new Node[numberOfPoints];
-        if(numberOfPoints > 0) {
+        if (numberOfPoints > 0) {
             double angleIncrement = 360 / numberOfPoints;
             double xRadius = 310;
             double yRadius = 300;
@@ -166,8 +163,8 @@ public class Explorer extends Application {
                 } else if (deltaX < -5) {
                     x -= 50;
                 }
-                Node n = new Node(x, y, o, this, Node.DEFAULT_RELATION);
-                this.addRelation(new Relation(mainNode, n));
+                Node n = new Node(x, y, o, this);
+                this.addRelation(new Relation(mainNode, n, "Genre : " + makeSimpleURI(o.getRelation())));
                 nodes[i] = n;
                 i++;
             }
@@ -176,6 +173,27 @@ public class Explorer extends Application {
         for (int j = 0; j < numberOfPoints; j++) {
             this.addNode(nodes[j]);
         }
+    }
+
+    public String makeSimpleURI(String uri) {
+
+        Pattern pattern = Pattern.compile("[^, /]+$");
+
+        Matcher matcher = pattern.matcher(uri);
+        String readable = uri;
+        if (matcher.find()) {
+            readable = matcher.group(0);
+        }
+        readable = readable.replace('_', ' ');
+        readable = readable.replaceAll("\\(.+$", "");
+
+        return readable;
+    }
+
+    public String makeObjectContent(GameInfo info) {
+        String content = "";
+        content += info.getDescriptions().get(0);
+        return content;
     }
 
     public Pane getGraphPane() {

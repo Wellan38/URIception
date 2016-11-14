@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
+
 import org.json.JSONException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,48 +28,45 @@ public class DBpediaSpotlightClient {
     private static Exception SpotlightCallException;
 
     public static String getSpotlightResponse(String text, double confidence, int support) throws IOException {
-            String url =    API_URL + "rest/annotate/?"
-                            + "confidence=" + confidence
-                            + "&support=" + support
-                            + "&text=" + URLEncoder.encode(text, "utf-8");
+        String url = API_URL + "rest/annotate/?"
+                + "confidence=" + confidence
+                + "&support=" + support
+                + "&text=" + URLEncoder.encode(text, "utf-8");
 
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-            // optional default is GET
-            con.setRequestMethod("GET");
+        // optional default is GET
+        con.setRequestMethod("GET");
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
 
-            while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-            }
-            in.close();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
 
-            return response.toString();
+        return response.toString();
     }
-    
-    public static LinkedList<String> extractURI (String htmlSource)
-    {
+
+    public static LinkedList<String> extractURI(String htmlSource) {
         LinkedList<String> listUri = new LinkedList<>();
         Document doc = Jsoup.parse(htmlSource);
-        
+
         Elements body = doc.getElementsByTag("body");
         Elements uriElements = body.get(0).getElementsByTag("a");
-        
-        for(Element balise  : uriElements)
-        {
+
+        for (Element balise : uriElements) {
             listUri.push(balise.attributes().get("title"));
         }
-            
+
         return listUri;
     }
-    
-    public static LinkedList<String> callAPI(String text) throws Exception
-    {
-        String htmlResponse = "";       
+
+    public static LinkedList<String> callAPI(String text) throws Exception {
+        String htmlResponse = "";
         try {
             htmlResponse = DBpediaSpotlightClient.getSpotlightResponse(text, 0.5, 0);
         } catch (IOException ex) {
@@ -77,10 +75,9 @@ public class DBpediaSpotlightClient {
         return extractURI(htmlResponse);
     }
 
-    public static void testSpotlight()
-    {
-        
-        
+    public static void testSpotlight() {
+
+
         String test = "First documented in the 13th century, Berlin was the capital"
                 + " of the Kingdom of Prussia (1701–1918), the German Empire (1871–1918),"
                 + " the Weimar Republic (1919–33) and the Third Reich (1933–45). Berlin in"
@@ -95,16 +92,15 @@ public class DBpediaSpotlightClient {
         } catch (Exception ex) {
             Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        for (String URI : listURI)
-        {
+
+        for (String URI : listURI) {
             System.out.print("URI : ");
             System.out.println(URI);
-        };
+        }
+        ;
     }
-    
-    public static void testGSE() throws IOException, JSONException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
+
+    public static void testGSE() throws IOException, JSONException, SAXException, ParserConfigurationException, XPathExpressionException {
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
         List<String> urlList = new ArrayList();
         urlList = gcse.RequestSearch("Le seigneur des anneaux");
@@ -116,36 +112,33 @@ public class DBpediaSpotlightClient {
         TextExtractor te = new TextExtractor("api_key.txt");
         List<String> rawTextList = new ArrayList();
         rawTextList = te.extractTextFromURLList(urlList);
-        for (String l:rawTextList)
-        {
+        for (String l : rawTextList) {
             System.out.println(l);
         }
     }
-    
-    public static void testGlobal(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException
-    {
+
+    public static void testGlobal(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         GoogleCustomSearchEngine gcse = new GoogleCustomSearchEngine("AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI", "001556729754408094837:r86b9hjdnoe");
         List<String> urlList = new ArrayList();
         urlList = gcse.RequestSearch(request);
-        
+
         TextExtractor te = new TextExtractor("api_key.txt");
         List<String> rawTextList = new ArrayList();
         rawTextList = te.extractTextFromURLList(urlList);
-        for (String l:rawTextList)
-        {
+        for (String l : rawTextList) {
             LinkedList<String> listURI = new LinkedList<>();
             try {
                 listURI = callAPI(l);
             } catch (Exception ex) {
                 Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
             }
-        
-            for (String URI : listURI)
-            {
+
+            for (String URI : listURI) {
                 System.out.print("URI : ");
                 System.out.println(URI);
-            };
+            }
+            ;
         }
     }
-    
+
 }

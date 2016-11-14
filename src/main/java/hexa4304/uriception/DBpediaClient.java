@@ -9,6 +9,7 @@ import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,17 +41,15 @@ public class DBpediaClient {
         private final int id;
 
         private InfoType(int id) {
-                this.id = id;
+            this.id = id;
         }
 
-        public int value()
-        {
+        public int value() {
             return id;
         }
     }
 
-    public static void initRequestParameters()
-    {
+    public static void initRequestParameters() {
         _requestParameters = new String[InfoType.NUMBER_INFO.value()];
         _requestParameters[InfoType.DEVELOPERS.value()] = "<http://dbpedia.org/ontology/developer>";
         _requestParameters[InfoType.DESIGNERS.value()] = "<http://dbpedia.org/ontology/designer>";
@@ -64,8 +63,7 @@ public class DBpediaClient {
 
     // Renvoie le résultat de la requête SPARQL de paramètres object, predicate, value.
     // Si un paramètre n'est pas connu, entrer la valeur "null" ou une String vide.
-    public static String sendRequest(String object, String predicate, String value) throws IOException
-    {
+    public static String sendRequest(String object, String predicate, String value) throws IOException {
         String request = buildRequest(object, predicate, value);
         // Cette url est looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooongue
         String url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0D%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0D%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0D%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0D%0APREFIX+%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F%3E%0D%0APREFIX+dbpedia2%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fproperty%2F%3E%0D%0APREFIX+dbpedia%3A+%3Chttp%3A%2F%2Fdbpedia.org%2F%3E%0D%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0D%0A";
@@ -82,7 +80,7 @@ public class DBpediaClient {
         StringBuffer response = new StringBuffer();
 
         while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            response.append(inputLine);
         }
         in.close();
 
@@ -91,8 +89,7 @@ public class DBpediaClient {
 
     // Construit une requête SPARQL simple avec les paramètres objet, prédicat, valeur.
     // Si un paramètre n'est pas connu, entrer la valeur "null" ou une String vide.
-    public static String buildRequest(String object, String predicate, String value)
-    {
+    public static String buildRequest(String object, String predicate, String value) {
         String request = "SELECT * WHERE { ";
 
         request += (object == null || object.isEmpty()) ? "?o " : (object + " ");
@@ -105,16 +102,14 @@ public class DBpediaClient {
     }
 
     // Extrait les données du document "json" (sous forme de String) envoyé en paramètre
-    public static LinkedList<String> jsonResultToStrings(String json, String result)
-    {
+    public static LinkedList<String> jsonResultToStrings(String json, String result) {
         LinkedList<String> listStrings = new LinkedList<>();
 
         JSONObject obj = new JSONObject(json);
         JSONObject results = obj.getJSONObject("results");
         JSONArray arr = results.getJSONArray("bindings");
 
-        for (int i = 0; i < arr.length(); i++)
-        {
+        for (int i = 0; i < arr.length(); i++) {
             JSONObject objI = arr.getJSONObject(i);
             JSONObject v = objI.getJSONObject(result);
             listStrings.add(v.getString("value"));
@@ -124,19 +119,15 @@ public class DBpediaClient {
     }
 
     // Renvoie null en cas de problème
-    public static LinkedList<String> getObjectByPropertyValue(String property, String valueofProperty)
-    {
+    public static LinkedList<String> getObjectByPropertyValue(String property, String valueofProperty) {
         String gamesJsonReturned = null;
-        try
-        {
+        try {
             gamesJsonReturned = sendRequest(null, property, valueofProperty);
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if(gamesJsonReturned != null)
-        {
+        if (gamesJsonReturned != null) {
             LinkedList<String> games = jsonResultToStrings(gamesJsonReturned, "o");
             return games;
         }
@@ -145,19 +136,15 @@ public class DBpediaClient {
     }
 
     // Renvoie null en cas de problème
-    public static LinkedList<String> getObjectValueByProperty(String object, String property)
-    {
+    public static LinkedList<String> getObjectValueByProperty(String object, String property) {
         String gamesJsonReturned = null;
-        try
-        {
+        try {
             gamesJsonReturned = sendRequest(object, property, null);
-        } catch (IOException ex)
-        {
+        } catch (IOException ex) {
             Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if(gamesJsonReturned != null)
-        {
+        if (gamesJsonReturned != null) {
             LinkedList<String> games = jsonResultToStrings(gamesJsonReturned, "v");
             return games;
         }

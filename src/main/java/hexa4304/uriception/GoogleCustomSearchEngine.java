@@ -19,21 +19,20 @@ import java.util.List;
 import org.json.*;
 
 /**
- *
  * @author Flo Macé
  */
 public class GoogleCustomSearchEngine {
-    
+
     private String customEngineIdentifier;
     private String APIKey;
-    
+
     //String customEngineIdentifier = "001556729754408094837:r86b9hjdnoe";
     //String key = "AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI";
-    
+
     public GoogleCustomSearchEngine() {
     }
-    
-    public GoogleCustomSearchEngine (String key, String cx){
+
+    public GoogleCustomSearchEngine(String key, String cx) {
         APIKey = key;
         customEngineIdentifier = cx;
     }
@@ -53,12 +52,12 @@ public class GoogleCustomSearchEngine {
     public void setAPIKey(String APIKey) {
         this.APIKey = APIKey;
     }
-    
-    public List<String> RequestSearch(String searchText) throws IOException, JSONException{
+
+    public List<String> RequestSearch(String searchText) throws IOException, JSONException {
         final String RESOURCE_PATH = "ressources.txt";
         final String PAGE_PATH = "page.txt";
 
-        URL url = new URL("https://www.googleapis.com/customsearch/v1?key="+APIKey+ "&cx="+ customEngineIdentifier +"&q="+    searchText+"&alt=json");
+        URL url = new URL("https://www.googleapis.com/customsearch/v1?key=" + APIKey + "&cx=" + customEngineIdentifier + "&q=" + searchText + "&alt=json");
         HttpURLConnection conn2 = (HttpURLConnection) url.openConnection();
 
         conn2.setRequestMethod("GET");
@@ -69,8 +68,7 @@ public class GoogleCustomSearchEngine {
         String res;
         String jsonString = "";
 
-        while((res = br.readLine()) != null)
-        {
+        while ((res = br.readLine()) != null) {
             jsonString += res;
         }
 
@@ -79,8 +77,7 @@ public class GoogleCustomSearchEngine {
 
         List<String> pageLinks = new ArrayList();
 
-        for (int i = 0; i < items.length(); i++)
-        {
+        for (int i = 0; i < items.length(); i++) {
             JSONObject obj = items.getJSONObject(i);
             String link = obj.getString("link");
 
@@ -90,8 +87,7 @@ public class GoogleCustomSearchEngine {
         File page_file = new File(PAGE_PATH);
         BufferedWriter PageWriter = new BufferedWriter(new FileWriter(page_file));
         System.out.println("\nPages:\n");
-        for (String l : pageLinks)
-        {
+        for (String l : pageLinks) {
             System.out.println(l);
             PageWriter.write(l);
             PageWriter.newLine();
