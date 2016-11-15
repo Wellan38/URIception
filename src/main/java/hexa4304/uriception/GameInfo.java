@@ -44,7 +44,7 @@ public class GameInfo {
     // Récupère toutes les informations concernant le jeu.
     // *** Le titre du jeu doit être connu ***
     public void getAllInformation() throws IOException {
-        String objectParameter = "<" + _titles.getFirst() + ">";
+        String objectParameter = (_titles.getFirst().contains("<")) ? _titles.getFirst() : "<" + _titles.getFirst() + ">";
 
         _developers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DEVELOPERS.value()]);
         _designers = DBpediaClient.getObjectValueByProperty(objectParameter, DBpediaClient._requestParameters[DBpediaClient.InfoType.DESIGNERS.value()]);

@@ -79,7 +79,7 @@ public class DBpediaClient {
 
         request += (object == null || object.isEmpty()) ? "?o " : (object + " ");
         request += (predicate == null || predicate.isEmpty()) ? "?p " : (predicate + " ");
-        request += (value == null || value.isEmpty()) ? "?v " : ("<" + value + "> ");
+        request += (value == null || value.isEmpty()) ? "?v " : (value + " ");
 
         request += "}";
 
