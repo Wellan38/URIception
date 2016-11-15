@@ -166,4 +166,54 @@ public class DBpediaClient {
 
         return new LinkedList<>();
     }
+
+    // Renvoie null en cas de problème
+    public static LinkedList<String> getSimilarObjects(String object) {
+        String gamesJsonReturned = null;
+        try {
+            gamesJsonReturned = sendSimilarRequest(object);
+        } catch (IOException ex) {
+            Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (gamesJsonReturned != null) {
+            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned, "v");
+            return games;
+        }
+
+        return new LinkedList<>();
+    }
+
+    public static String sendSimilarRequest(String object) throws IOException {
+        String request = "select ?v (count(?p) as ?c) where { \n" +
+                "  values ?game { <" + object + "> }\n" +
+                "  ?v ?p ?o ; a <http://dbpedia.org/ontology/VideoGame> .\n" +
+                "  ?game   ?p ?o .\n" +
+                "  FILTER (?game != ?v)\n" +
+                "}\n" +
+                "group by ?v ?game\n" +
+                "order by desc(?c)\n" +
+                "limit 20";
+
+        // Cette url est looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooongue
+        String url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0D%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0D%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0D%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0D%0APREFIX+%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F%3E%0D%0APREFIX+dbpedia2%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fproperty%2F%3E%0D%0APREFIX+dbpedia%3A+%3Chttp%3A%2F%2Fdbpedia.org%2F%3E%0D%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0D%0A";
+        url += URLEncoder.encode(request, "utf-8");
+        url += "&output=json";
+
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        con.setRequestMethod("GET"); // optional default is GET
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        return response.toString();
+    }
 }

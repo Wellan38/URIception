@@ -85,14 +85,6 @@ public class Explorer extends Application {
             this.title.setText(DEFAULT_TITLE);
             this.image.setImage(new Image(DEFAULT_IMAGE_URL));
 
-            // TEST
-            URIObject object = new URIObject();
-            LinkedList<URIObject> list = new LinkedList<>();
-            for (int i = 0; i < 20; i++) {
-                list.add(new URIObject());
-            }
-            this.makeGraph(object, list);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,8 +147,7 @@ public class Explorer extends Application {
         addContentToFlow(text);
         String genre = info.getURIGenres().get(0);
         LinkedList<URIObject> relatedObjects = new LinkedList<>();
-        LinkedList<String> related = DBpediaClient.getObjectByPropertyValue(DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()], genre);
-        System.out.println(related.get(0));
+        LinkedList<String> related = DBpediaClient.getSimilarObjects(mainUri);
         int i = 0;
         for (String uri : related) {
             if (i >= 20) {
