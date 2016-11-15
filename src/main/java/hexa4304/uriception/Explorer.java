@@ -110,7 +110,7 @@ public class Explorer extends Application {
     public void makeSearchResult(String search, ArrayList<String> list) {
         this.title.setText("Resultat pour '" + search + "'");
         clearContentFlow();
-        for(String uri : list) {
+        for (String uri : list) {
             Hyperlink hyperlink = new Hyperlink();
             hyperlink.setText(TextExtractor.extractTextFromURIForDisplay(uri));
             hyperlink.setPrefWidth(280);
@@ -136,7 +136,7 @@ public class Explorer extends Application {
         String mainUri = info.getURITitles().get(0);
         String title = TextExtractor.extractTextFromURIForDisplay(mainUri);
         String[][] content = makeObjectContent(info);
-        for(int i = 0; i<content.length; i++) {
+        for (int i = 0; i < content.length; i++) {
             Text label = new Text(content[i][0] + "\n");
             label.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
             addContentToFlow(label);
@@ -200,29 +200,64 @@ public class Explorer extends Application {
         String[][] content = new String[6][2];
 
         content[0][0] = "Developers :";
-        content[0][1] = TextExtractor.extractTextFromURIForDisplay(info.getURIDevelopers().get(0));
+        String developers = "";
+        for (String developer : info.getURIDevelopers()) {
+            developers += TextExtractor.extractTextFromURIForDisplay(" " + developer + ",");
+        }
+        if (developers.length() > 0) {
+            developers = developers.substring(0, developers.length() - 1);
+        }
+        content[0][1] = developers;
+
         content[1][0] = "Genres :";
-        String genres = "" ;
-        for(String genre : info.getURIGenres()) {
+        String genres = "";
+        for (String genre : info.getURIGenres()) {
             genres += TextExtractor.extractTextFromURIForDisplay(" " + genre + ",");
         }
-        genres = genres.substring(0, genres.length()-1);
+        if (genres.length() > 0) {
+            genres = genres.substring(0, genres.length() - 1);
+        }
         content[1][1] = genres;
 
         content[2][0] = "Platforms :";
         String platforms = "";
-        for(String platform : info.getURIPlatforms()) {
+        for (String platform : info.getURIPlatforms()) {
             platforms += TextExtractor.extractTextFromURIForDisplay(" " + platform + ",");
         }
-        platforms = platforms.substring(0, platforms.length()-1);
+        if (platforms.length() > 0) {
+            platforms = platforms.substring(0, platforms.length() - 1);
+        }
         content[2][1] = platforms;
 
         content[3][0] = "Publishers :";
-        content[3][1] = TextExtractor.extractTextFromURIForDisplay(info.getURIPublishers().get(0));
+        String publishers = "";
+        for (String publisher : info.getURIPublishers()) {
+            publishers += TextExtractor.extractTextFromURIForDisplay(" " + publisher + ",");
+        }
+        if (publishers.length() > 0) {
+            publishers = publishers.substring(0, publishers.length() - 1);
+        }
+        content[3][1] = publishers;
+
         content[4][0] = "Release date :";
-        content[4][1] = TextExtractor.extractTextFromURIForDisplay(info.getURIReleaseDates().get(0));
+        String releases = "";
+        for (String release : info.getURIReleaseDates()) {
+            releases += TextExtractor.extractTextFromURIForDisplay(" " + release + ",");
+        }
+        if (releases.length() > 0) {
+            releases = releases.substring(0, releases.length() - 1);
+        }
+        content[4][1] = releases;
+
         content[5][0] = "Description :";
-        content[5][1] = info.getURIDescriptions().get(0);
+        String descriptions = "";
+        for (String description : info.getURIDescriptions()) {
+            descriptions += " " + description + ",";
+        }
+        if (descriptions.length() > 0) {
+            descriptions = descriptions.substring(0, descriptions.length() - 1);
+        }
+        content[5][1] = descriptions;
 
         return content;
     }
