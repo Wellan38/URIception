@@ -7,6 +7,7 @@ package hexa4304.uriception;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -76,7 +77,7 @@ public class SparqlProcessor {
             }
 
             for (int i = 0; i < uriList.length(); i++) {
-                uriSet.add(uriList.getJSONObject(i).getJSONObject("opus").get("value").toString());
+                uriSet.add(uriList.getJSONObject(i).getJSONObject("opus").getString("value"));
             }
         }
 
@@ -85,14 +86,14 @@ public class SparqlProcessor {
         return videoGameURIList;
     }
 
-    private JSONArray sparqlQuery(String queryString) {
+    public JSONArray sparqlQuery(String queryString) throws UnsupportedEncodingException {
         Query query = QueryFactory.create(queryString);
         QueryExecution qExe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
         ResultSet results = qExe.execSelect();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ResultSetFormatter.outputAsJSON(outputStream, results);
-        String jsonString = new String(outputStream.toByteArray());
+        String jsonString = new String(outputStream.toByteArray(), "UTF-8");
         JSONObject resultJson = new JSONObject(jsonString);
 
         return resultJson.getJSONObject("results").getJSONArray("bindings");

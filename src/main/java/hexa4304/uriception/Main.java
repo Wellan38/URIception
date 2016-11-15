@@ -48,7 +48,7 @@ public class Main {
             switch (choix) {
                 case 1:
                     sc.nextLine();
-                    System.out.print("Saisissez le nom du jeu (format DBPedia avec _ Ã  la place de \" \") : ");
+                    System.out.print("Saisissez le nom du jeu sous forme d'URI DBpedia : ");
                     title = sc.nextLine();
                     gameInfo = new GameInfo(title);
                     gameInfo.testGameInfoURI();
@@ -60,13 +60,15 @@ public class Main {
                     LinkedList<String> listGames = DBpediaClient.getObjectByPropertyValue(
                             _requestParameters[DBpediaClient.InfoType.GENRES.value()],
                             "<http://dbpedia.org/resource/Survival_game>");
+                    System.out.println();
                     for (String t : listGames) {
                         System.out.println(extractTextFromURIForDisplay(t));
                     }
                     choiceIsGood = true;
+                    break;
                 case 3:
                     sc.nextLine();
-                    System.out.print("Saisissez le nom du jeu (format DBPedia avec _ Ã  la place de \" \") : ");
+                    System.out.print("Saisissez le nom du jeu sous forme d'URI DBpedia : ");
                     title = sc.nextLine();
                     gameInfo = new GameInfo(title);
                     gameInfo.testGameInfoDisplay();
