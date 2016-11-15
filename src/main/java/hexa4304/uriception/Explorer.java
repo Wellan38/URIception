@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
@@ -136,16 +138,22 @@ public class Explorer extends Application {
         URIObject mainObject = new URIObject();
         String mainUri = info.getURITitles().get(0);
         String title = TextExtractor.extractTextFromURIForDisplay(mainUri);
-        String content = makeObjectContent(info);
+        String[][] content = makeObjectContent(info);
+        for(int i = 0; i<content.length; i++) {
+            Text label = new Text(content[i][0] + "\n");
+            label.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+            addContentToFlow(label);
+            Text value = new Text(content[i][1] + "\n\n");
+            value.setWrappingWidth(280);
+            addContentToFlow(value);
+        }
         mainObject.setTitle(title);
         mainObject.setUri(mainUri);
-        mainObject.setContent(content);
         this.setTitle(title);
-        Text text = new Text(content);
+        /*Text text = new Text(content);
         text.setWrappingWidth(280);
         clearContentFlow();
-        addContentToFlow(text);
-        String genre = info.getURIGenres().get(0);
+        addContentToFlow(text);*/
         LinkedList<URIObject> relatedObjects = new LinkedList<>();
         LinkedList<String[]> related = DBpediaClient.getSimilarObjects(mainUri);
         int i = 0;
@@ -195,9 +203,34 @@ public class Explorer extends Application {
         }
     }
 
-    public String makeObjectContent(GameInfo info) {
-        String content = "";
-        content += info.getURIDescriptions().get(0);
+    public String[][] makeObjectContent(GameInfo info) {
+        String[][] content = new String[6][2];
+
+        content[0][0] = "Developers :";
+        content[0][1] = TextExtractor.extractTextFromURIForDisplay(info.getURIDevelopers().get(0));
+        content[1][0] = "Genres :";
+        String genres = "" ;
+        for(String genre : info.getURIGenres()) {
+            genres += TextExtractor.extractTextFromURIForDisplay(" " + genre + ",");
+        }
+        genres = genres.substring(0, genres.length()-1);
+        content[1][1] = genres;
+
+        content[2][0] = "Platforms :";
+        String platforms = "";
+        for(String platform : info.getURIPlatforms()) {
+            platforms += TextExtractor.extractTextFromURIForDisplay(" " + platform + ",");
+        }
+        platforms = platforms.substring(0, platforms.length()-1);
+        content[2][1] = platforms;
+
+        content[3][0] = "Publishers :";
+        content[3][1] = TextExtractor.extractTextFromURIForDisplay(info.getURIPublishers().get(0));
+        content[4][0] = "Release date :";
+        content[4][1] = TextExtractor.extractTextFromURIForDisplay(info.getURIReleaseDates().get(0));
+        content[5][0] = "Description :";
+        content[5][1] = info.getURIDescriptions().get(0);
+
         return content;
     }
 
