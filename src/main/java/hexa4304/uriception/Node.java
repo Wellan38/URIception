@@ -14,7 +14,6 @@ public class Node extends Parent {
     public static final double DEFAULT_RADIUS_X = 80;
     public static final double DEFAULT_RADIUS_Y = 15;
     public static final double DEFAULT_FONT = 10;
-    public static final String DEFAULT_RELATION = "Relation";
 
     private double x;
     private double y;
@@ -22,8 +21,6 @@ public class Node extends Parent {
     private URIObject object;
 
     private Explorer explorer;
-
-    private Tooltip tooltip;
 
     public Node(double x, double y, URIObject o, Explorer e) {
         this.object = o;
@@ -96,29 +93,5 @@ public class Node extends Parent {
             }
         });
         return button;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public void setObject(URIObject object) {
-        this.object = object;
-    }
-
-    public void setExplorer(Explorer explorer) {
-        this.explorer = explorer;
-    }
-
-    public Tooltip getTooltip() {
-        return tooltip;
-    }
-
-    public void setTooltip(Tooltip tooltip) {
-        this.tooltip = tooltip;
     }
 }

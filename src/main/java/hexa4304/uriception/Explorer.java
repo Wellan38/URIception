@@ -22,8 +22,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Explorer extends Application {
 
@@ -46,7 +44,6 @@ public class Explorer extends Application {
 
     private static final String DEFAULT_TITLE = "Aucun objet sélectionné !";
     private static final String DEFAULT_IMAGE_URL = "http://www.knowledgebrain.com/NothingImages/Nothing_512_512.jpg";
-    private static final String DEFAULT_CONTENT = "Aucun objet sélectionné !";
 
     public static void main(String[] args) {
         DBpediaClient.initRequestParameters();
@@ -150,10 +147,6 @@ public class Explorer extends Application {
         mainObject.setTitle(title);
         mainObject.setUri(mainUri);
         this.setTitle(title);
-        /*Text text = new Text(content);
-        text.setWrappingWidth(280);
-        clearContentFlow();
-        addContentToFlow(text);*/
         LinkedList<URIObject> relatedObjects = new LinkedList<>();
         LinkedList<String[]> related = DBpediaClient.getSimilarObjects(mainUri);
         int i = 0;
@@ -238,40 +231,8 @@ public class Explorer extends Application {
         return this.graphPane;
     }
 
-    public Text getTitle() {
-        return title;
-    }
-
-    public void setTitle(Text title) {
-        this.title = title;
-    }
-
-    public ImageView getImage() {
-        return image;
-    }
-
-    public void setImage(ImageView image) {
-        this.image = image;
-    }
-
     public TextField getSearchField() {
         return searchField;
-    }
-
-    public void setSearchField(TextField searchField) {
-        this.searchField = searchField;
-    }
-
-    public Button getSearchButton() {
-        return searchButton;
-    }
-
-    public void setSearchButton(Button searchButton) {
-        this.searchButton = searchButton;
-    }
-
-    public void setGraphPane(Pane graphPane) {
-        this.graphPane = graphPane;
     }
 
     public void addContentToFlow(javafx.scene.Node node) {

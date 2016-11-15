@@ -8,10 +8,6 @@ import javafx.scene.text.Text;
 
 public class Relation extends Parent {
 
-    private Node start;
-
-    private Node end;
-
     private double xStart;
     private double yStart;
     private double xEnd;
@@ -19,17 +15,7 @@ public class Relation extends Parent {
 
     private String text;
 
-    public Relation() {
-        this.xStart = 0;
-        this.xEnd = 0;
-        this.yStart = 0;
-        this.yEnd = 0;
-    }
-
     public Relation(Node s, Node e, String r) {
-        this.start = s;
-        this.end = e;
-
         this.text = r;
 
         xStart = s.getX();
