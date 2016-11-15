@@ -28,9 +28,6 @@ public class Explorer extends Application {
     @FXML
     private Text title;
 
-    @FXML
-    private ImageView image;
-
     private TextFlow contentFlow;
 
     @FXML
@@ -61,7 +58,6 @@ public class Explorer extends Application {
 
             this.title = (Text) scene.lookup("#title");
             this.contentFlow = (TextFlow) scene.lookup("#contentFlow");
-            this.image = (ImageView) scene.lookup("#image");
             this.searchField = (TextField) scene.lookup("#searchField");
             this.searchButton = (Button) scene.lookup("#searchButton");
 
@@ -75,7 +71,7 @@ public class Explorer extends Application {
                             ArrayList<String> list = (ArrayList<String>) uriFinder.dbpediaSearch(search);
                             makeSearchResult(search, list);
                         } catch(Exception exception) {
-                            // exception.printStackTrace();
+                            exception.printStackTrace();
                             Explorer.this.clearContentFlow();
                             Explorer.this.setTitle("Erreur !");
                             Explorer.this.addContentToFlow(new Text("Erreur lors de la recherche"));
@@ -89,7 +85,6 @@ public class Explorer extends Application {
             this.graphPane = (Pane) scene.lookup("#graph");
 
             this.title.setText(DEFAULT_TITLE);
-            this.image.setImage(new Image(DEFAULT_IMAGE_URL));
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -41,10 +41,9 @@
                               <Font size="20.0" />
                            </font>
                         </Text>
-                        <ImageView id="image" fitHeight="200.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" />
-                        <ScrollPane prefHeight="420.0" prefViewportHeight="198.0" prefViewportWidth="300.0" prefWidth="300.0">
+                        <ScrollPane prefHeight="540.0" prefViewportHeight="198.0" prefViewportWidth="300.0" prefWidth="300.0">
                            <content>
-                              <TextFlow id="contentFlow" prefHeight="280.0" prefWidth="280.0" />
+                              <TextFlow id="contentFlow" prefHeight="530.0" prefWidth="280.0" />
                            </content>
                         </ScrollPane>
                      </children>

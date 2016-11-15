@@ -35,8 +35,8 @@ public class URIFinder {
     private final static String DBPEDIA_ID = "001556729754408094837:hksxp-tujys"; // 1
 
     //    private final static String API_KEY = "AIzaSyDmE16v9wqfViMfWWxkW07qCQQn2Or0uMI"; // 1
-//    private final static String API_KEY = "AIzaSyDW9tp9BvomeZG2OagHAeolEEyCL0VurJc"; // 2
-    private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
+    private final static String API_KEY = "AIzaSyDW9tp9BvomeZG2OagHAeolEEyCL0VurJc"; // 2
+//    private final static String API_KEY = "AIzaSyA9BlmezjrVu-kNXDQnr47UoMhl85V--G0"; // 3
 
     // moteur de recherche sur Wikipedia
     public List<String> wikipediaSearch(String request) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
