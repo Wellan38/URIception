@@ -37,8 +37,8 @@ public class Relation extends Parent {
         yStart = s.getY();
         yEnd = e.getY();
 
-        double xText = xStart + (xStart - xEnd) / 2;
-        double yText = yStart + (yStart - yEnd) / 2;
+        double xText = xStart + - 20 + (xEnd - xStart) / 2;
+        double yText = yStart + (yEnd - yStart) / 2;
 
         Line l = new Line(this.xStart, this.yStart, this.xEnd, this.yEnd);
         this.getChildren().add(l);

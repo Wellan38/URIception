@@ -133,6 +133,24 @@ public class DBpediaClient {
         return listStrings;
     }
 
+    public static LinkedList<String[]> jsonSimilarResultToStrings(String json) {
+        LinkedList<String[]> listStrings = new LinkedList<>();
+
+        JSONObject obj = new JSONObject(json);
+        JSONObject results = obj.getJSONObject("results");
+        JSONArray arr = results.getJSONArray("bindings");
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject objI = arr.getJSONObject(i);
+            String valueExtracted = objI.getJSONObject("v").getString("value");
+            String countExtracted = objI.getJSONObject("c").getString("value");
+            String[] result = {valueExtracted, countExtracted};
+            listStrings.add(result);
+        }
+
+        return listStrings;
+    }
+
     // Renvoie null en cas de problème
     public static LinkedList<String> getObjectByPropertyValue(String property, String valueofProperty) {
         String gamesJsonReturned = null;
@@ -168,7 +186,7 @@ public class DBpediaClient {
     }
 
     // Renvoie null en cas de problème
-    public static LinkedList<String> getSimilarObjects(String object) {
+    public static LinkedList<String[]> getSimilarObjects(String object) {
         String gamesJsonReturned = null;
         try {
             gamesJsonReturned = sendSimilarRequest(object);
@@ -177,7 +195,8 @@ public class DBpediaClient {
         }
 
         if (gamesJsonReturned != null) {
-            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned, "v");
+            //LinkedList<String> games = jsonResultToStrings(gamesJsonReturned, "v");
+            LinkedList<String[]> games = jsonSimilarResultToStrings(gamesJsonReturned);
             return games;
         }
 

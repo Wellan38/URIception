@@ -147,17 +147,17 @@ public class Explorer extends Application {
         addContentToFlow(text);
         String genre = info.getURIGenres().get(0);
         LinkedList<URIObject> relatedObjects = new LinkedList<>();
-        LinkedList<String> related = DBpediaClient.getSimilarObjects(mainUri);
+        LinkedList<String[]> related = DBpediaClient.getSimilarObjects(mainUri);
         int i = 0;
-        for (String uri : related) {
+        for (String[] uri : related) {
             if (i >= 20) {
                 break;
             }
             URIObject o = new URIObject();
-            String readableTitle = TextExtractor.extractTextFromURIForDisplay(uri);
+            String readableTitle = TextExtractor.extractTextFromURIForDisplay(uri[0]);
             o.setTitle(readableTitle);
-            o.setUri(uri);
-            o.setRelation("Genre:" + genre);
+            o.setUri(uri[0]);
+            o.setRelation("Identical:" + uri[1]);
             relatedObjects.add(o);
             i++;
         }
@@ -184,7 +184,7 @@ public class Explorer extends Application {
                     x -= 50;
                 }
                 Node n = new Node(x, y, o, this);
-                this.addRelation(new Relation(mainNode, n, "Genre : " + TextExtractor.extractTextFromURIForDisplay(o.getRelation())));
+                this.addRelation(new Relation(mainNode, n, TextExtractor.extractTextFromURIForDisplay(o.getRelation())));
                 nodes[i] = n;
                 i++;
             }
