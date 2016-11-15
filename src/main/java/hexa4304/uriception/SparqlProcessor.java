@@ -85,7 +85,7 @@ public class SparqlProcessor {
         return videoGameURIList;
     }
 
-    private JSONArray sparqlQuery(String queryString) {
+    public JSONArray sparqlQuery(String queryString) {
         Query query = QueryFactory.create(queryString);
         QueryExecution qExe = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query);
         ResultSet results = qExe.execSelect();

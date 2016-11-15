@@ -64,28 +64,12 @@ public class DBpediaClient {
 
     // Renvoie le résultat de la requête SPARQL de paramètres object, predicate, value.
     // Si un paramètre n'est pas connu, entrer la valeur "null" ou une String vide.
-    public static String sendRequest(String object, String predicate, String value) throws IOException {
+    public static JSONArray sendRequest(String object, String predicate, String value) throws IOException {
         String request = buildRequest(object, predicate, value);
-        // Cette url est looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooongue
-        String url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0D%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0D%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0D%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0D%0APREFIX+%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F%3E%0D%0APREFIX+dbpedia2%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fproperty%2F%3E%0D%0APREFIX+dbpedia%3A+%3Chttp%3A%2F%2Fdbpedia.org%2F%3E%0D%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0D%0A";
-        url += URLEncoder.encode(request, "utf-8");
-        url += "&output=json";
 
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-        con.setRequestMethod("GET"); // optional default is GET
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        return response.toString();
+          SparqlProcessor proc = new SparqlProcessor();
+          
+          return proc.sparqlQuery(request);
     }
 
     // Construit une requête SPARQL simple avec les paramètres objet, prédicat, valeur.
@@ -105,12 +89,8 @@ public class DBpediaClient {
     // Extrait les données du document "json" (sous forme de String) envoyé en paramètre
     // valueTypeToExtract désigne qu'elle partie de la requête nous interesse c'est à dire
     // o, p, ou v. Il faut donc indiqué une de ces 3 valeur en string (cf build Request)
-    public static LinkedList<String> jsonResultToStrings(String json, String valueTypeToExtract) {
+    public static LinkedList<String> jsonResultToStrings(JSONArray arr, String valueTypeToExtract) {
         LinkedList<String> listStrings = new LinkedList<>();
-
-        JSONObject obj = new JSONObject(json);
-        JSONObject results = obj.getJSONObject("results");
-        JSONArray arr = results.getJSONArray("bindings");
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject objI = arr.getJSONObject(i);
@@ -133,12 +113,8 @@ public class DBpediaClient {
         return listStrings;
     }
 
-    public static LinkedList<String[]> jsonSimilarResultToStrings(String json) {
+    public static LinkedList<String[]> jsonSimilarResultToStrings(JSONArray arr) {
         LinkedList<String[]> listStrings = new LinkedList<>();
-
-        JSONObject obj = new JSONObject(json);
-        JSONObject results = obj.getJSONObject("results");
-        JSONArray arr = results.getJSONArray("bindings");
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject objI = arr.getJSONObject(i);
@@ -153,15 +129,15 @@ public class DBpediaClient {
 
     // Renvoie null en cas de problème
     public static LinkedList<String> getObjectByPropertyValue(String property, String valueofProperty) {
-        String gamesJsonReturned = null;
+        JSONArray gamesReturned = null;
         try {
-            gamesJsonReturned = sendRequest(null, property, valueofProperty);
+            gamesReturned = sendRequest(null, property, valueofProperty);
         } catch (IOException ex) {
             Logger.getLogger(DBpediaClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (gamesJsonReturned != null) {
-            LinkedList<String> games = jsonResultToStrings(gamesJsonReturned, "o");
+        if (gamesReturned != null) {
+            LinkedList<String> games = jsonResultToStrings(gamesReturned, "o");
             return games;
         }
 
@@ -170,7 +146,7 @@ public class DBpediaClient {
 
     // Renvoie null en cas de problème
     public static LinkedList<String> getObjectValueByProperty(String object, String property) {
-        String gamesJsonReturned = null;
+        JSONArray gamesJsonReturned = null;
         try {
             gamesJsonReturned = sendRequest(object, property, null);
         } catch (IOException ex) {
@@ -187,7 +163,7 @@ public class DBpediaClient {
 
     // Renvoie null en cas de problème
     public static LinkedList<String[]> getSimilarObjects(String object) {
-        String gamesJsonReturned = null;
+        JSONArray gamesJsonReturned = null;
         try {
             gamesJsonReturned = sendSimilarRequest(object);
         } catch (IOException ex) {
@@ -203,7 +179,7 @@ public class DBpediaClient {
         return new LinkedList<>();
     }
 
-    public static String sendSimilarRequest(String object) throws IOException {
+    public static JSONArray sendSimilarRequest(String object) throws IOException {
         String request = "select ?v (count(?p) as ?c) where { \n" +
                 "  values ?game { <" + object + "> }\n" +
                 "  ?v ?p ?o ; a <http://dbpedia.org/ontology/VideoGame> .\n" +
@@ -214,25 +190,8 @@ public class DBpediaClient {
                 "order by desc(?c)\n" +
                 "limit 20";
 
-        // Cette url est looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooongue
-        String url = "http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=PREFIX+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0D%0APREFIX+xsd%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2001%2FXMLSchema%23%3E%0D%0APREFIX+rdfs%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23%3E%0D%0APREFIX+rdf%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0D%0APREFIX+foaf%3A+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2F%3E%0D%0APREFIX+dc%3A+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%3E%0D%0APREFIX+%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2F%3E%0D%0APREFIX+dbpedia2%3A+%3Chttp%3A%2F%2Fdbpedia.org%2Fproperty%2F%3E%0D%0APREFIX+dbpedia%3A+%3Chttp%3A%2F%2Fdbpedia.org%2F%3E%0D%0APREFIX+skos%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3E%0D%0A";
-        url += URLEncoder.encode(request, "utf-8");
-        url += "&output=json";
-
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-        con.setRequestMethod("GET"); // optional default is GET
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        return response.toString();
+        SparqlProcessor proc = new SparqlProcessor();
+        
+        return proc.sparqlQuery(request);
     }
 }
