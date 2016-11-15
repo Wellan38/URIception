@@ -71,8 +71,15 @@ public class Explorer extends Application {
                     try {
                         String search = Explorer.this.getSearchField().getText().trim();
                         URIFinder uriFinder = new URIFinder();
-                        ArrayList<String> list = (ArrayList<String>) uriFinder.dbpediaSearch(search);
-                        makeSearchResult(search, list);
+                        try {
+                            ArrayList<String> list = (ArrayList<String>) uriFinder.dbpediaSearch(search);
+                            makeSearchResult(search, list);
+                        } catch(Exception exception) {
+                            // exception.printStackTrace();
+                            Explorer.this.clearContentFlow();
+                            Explorer.this.setTitle("Erreur !");
+                            Explorer.this.addContentToFlow(new Text("Erreur lors de la recherche"));
+                        }
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
