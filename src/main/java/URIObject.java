@@ -1,5 +1,3 @@
-package hexa4304.uriception;
-
 public class URIObject {
 
     private String title;

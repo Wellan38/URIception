@@ -3,19 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hexa4304.uriception;
-
-import static hexa4304.uriception.DBpediaClient._requestParameters;
-import static hexa4304.uriception.DBpediaSpotlightClient.callAPI;
-import static hexa4304.uriception.TextExtractor.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
@@ -58,11 +49,11 @@ public class Main {
                     sc.nextLine();
                     System.out.print("Affichage des jeux de survie");
                     LinkedList<String> listGames = DBpediaClient.getObjectByPropertyValue(
-                            _requestParameters[DBpediaClient.InfoType.GENRES.value()],
+                            DBpediaClient._requestParameters[DBpediaClient.InfoType.GENRES.value()],
                             "<http://dbpedia.org/resource/Survival_game>");
                     System.out.println();
                     for (String t : listGames) {
-                        System.out.println(extractTextFromURIForDisplay(t));
+                        System.out.println(TextExtractor.extractTextFromURIForDisplay(t));
                     }
                     choiceIsGood = true;
                     break;

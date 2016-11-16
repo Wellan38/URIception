@@ -1,8 +1,3 @@
-package hexa4304.uriception;
-
-
-import static hexa4304.uriception.DBpediaSpotlightClient.callAPI;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -65,7 +60,7 @@ public class URIFinder {
             for (String p : paragraphs) {
                 try {
                     System.out.println("fin appel a spotlight");
-                    set.addAll(callAPI(p));
+                    set.addAll(DBpediaSpotlightClient.callAPI(p));
                 } catch (Exception ex) {
                     Logger.getLogger(DBpediaSpotlightClient.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -1,5 +1,3 @@
-package hexa4304.uriception;
-
 import java.io.IOException;
 import java.util.LinkedList;
 

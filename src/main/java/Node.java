@@ -1,5 +1,3 @@
-package hexa4304.uriception;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
