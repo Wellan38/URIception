@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -14,6 +15,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.apache.jena.base.Sys;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ public class Explorer extends Application {
 
     @FXML
     private Button searchButton;
+
+    @FXML
+    private ComboBox searchSource;
 
     @FXML
     private Pane graphPane;
@@ -57,6 +62,7 @@ public class Explorer extends Application {
             this.contentFlow = (TextFlow) scene.lookup("#contentFlow");
             this.searchField = (TextField) scene.lookup("#searchField");
             this.searchButton = (Button) scene.lookup("#searchButton");
+            this.searchSource = (ComboBox) scene.lookup("#searchSource");
 
             this.searchButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -65,8 +71,13 @@ public class Explorer extends Application {
                         String search = Explorer.this.getSearchField().getText().trim();
                         URIFinder uriFinder = new URIFinder();
                         try {
-                            ArrayList<String> list = (ArrayList<String>) uriFinder.dbpediaSearch(search);
-                            makeSearchResult(search, list);
+                            if(Explorer.this.searchSource.getValue().equals("DBPedia")) {
+                                ArrayList<String> list = (ArrayList<String>) uriFinder.dbpediaSearch(search);
+                                makeSearchResult(search, list);
+                            } else {
+                                ArrayList<String> list = (ArrayList<String>) uriFinder.wikipediaSearch(search);
+                                makeSearchResult(search, list);
+                            }
                         } catch(Exception exception) {
                             exception.printStackTrace();
                             Explorer.this.clearContentFlow();

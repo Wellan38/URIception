@@ -11,6 +11,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
+<?import javafx.collections.FXCollections?>
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Pane id="graph" maxHeight="-Infinity" prefHeight="680.0" prefWidth="900.0" style="-fx-background-color: white;" />
@@ -27,6 +28,14 @@
                      </padding>
                      <children>
                         <TextField id="searchField" />
+                        <ComboBox id="searchSource" promptText="Source">
+                           <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                 <String fx:value="DBPedia" />
+                                 <String fx:value="Wikipedia" />
+                              </FXCollections>
+                           </items>
+                        </ComboBox>
                         <Button id="searchButton" mnemonicParsing="false" text="Rechercher" />
                      </children>
                   </HBox>
